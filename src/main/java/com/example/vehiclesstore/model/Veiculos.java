@@ -1,12 +1,13 @@
 package com.example.vehiclesstore.model;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Veiculos {
 
-    @Id //depId is the primary key
-    private Integer ID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int ID;
+
     private String marca;
     private String categoria;
     private String modelo;
@@ -15,11 +16,12 @@ public class Veiculos {
     private String cor;
     private int preco;
 
-    public Integer getID() {
+
+    public int getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 

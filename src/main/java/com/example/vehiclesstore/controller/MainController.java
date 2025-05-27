@@ -2,7 +2,6 @@ package com.example.vehiclesstore.controller;
 
 import com.example.vehiclesstore.model.Login;
 import com.example.vehiclesstore.repository.LoginRepository;
-import com.example.vehiclesstore.repository.VeiculosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
