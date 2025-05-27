@@ -14,6 +14,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
+ * catálogo de produtos estruturado.
+ *
+ * Deverá permitir atualizar os produtos que vende; permitir vários tipos de consultas; fazer a gestão de vendas e dos stocks existentes.
+ * Os clientes podem fazer compras online.
+ *
+ * A um cliente, deve ser emitida uma fatura. Suponha que a fatura será paga quando da entrega do produto.
+ * Ser possível obter informação sobre o funcionamento da loja: Quais os produtos mais/menos vendidos?
+ *                                                              Quais os melhores clientes? Qual o valor faturado no dia/semana/mês? …
+ * Além das funcionalidades da aplicação devem ser tratados os aspetos de:
+ *      - gestão de sessões na interação de cada utilizador com a aplicação;
+ *      - segurança na gestão de sessões, na introdução de dados, e outros aspetos que considere importantes.
+ */
+
+
 @Controller // This means that this class is a Controller
 public class MainController {
     @Autowired
