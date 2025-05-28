@@ -1,8 +1,11 @@
 package com.example.vehiclesstore.controller;
 
-import com.example.vehiclesstore.model.Login;
-import com.example.vehiclesstore.repository.LoginRepository;
+import com.example.vehiclesstore.model.Users;
+import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
+import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
@@ -32,11 +35,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller // This means that this class is a Controller
 public class MainController {
+    private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Autowired
     private VeiculosRepository vehicleRepository;
 
+
     @Autowired
-    private LoginRepository loginRepository;
+    private UsersRepository userRepository;
+
     @Autowired
     private PageableHandlerMethodArgumentResolverSupport pageableHandlerMethodArgumentResolverSupport;
 
@@ -44,38 +50,84 @@ public class MainController {
     public String getAllDeps(Model model) {
         model.addAttribute("ListDeps", vehicleRepository.findAll());
         //loginRepository.deleteAll();
+        //userRepository.deleteAll();
         return "index";
     }
+
+    @Autowired
+    private BCryptPasswordEncoder hashPassword;
 
     @GetMapping("/registar")
     public String registar() {
         return "registar";
     }
 
-    @Autowired
-    private BCryptPasswordEncoder hashPassword;
-
-    @PostMapping("/registar")
-    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2 ){
-        if (loginRepository.findByEmail(email) != null){
+    @PostMapping("/addUser")
+    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
+        if (userRepository.findByEmail(email) != null){
             return "redirect:/registar?error  -> email";
-
         }
 
         if (!password.equals(password2)){
             return "redirect:/registar?pass not match";
         }
 
-        Login user = new Login();
+        Users user = new Users();
         //user.setID(1);
         user.setEmail(email);
         //BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
         //user.setPassword(bc.encode(password));
         user.setPassword(hashPassword.encode(password));
-        loginRepository.save(user);
+        user.setRole("user");
+        user.setNome(nome);
+        user.setMorada(morada);
+        user.setNumTelemovel(tel);
+
+        userRepository.save(user);
+        System.out.println("added!");
+
         return "redirect:/";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 
+    @GetMapping("/checkUser")
+    public String loginUser(@RequestParam String email, @RequestParam String password, Model model){
+        Users user = userRepository.findByEmail(email);
+
+        if (user == null){
+            model.addAttribute("error", "email errada");
+            return "login";
+        }
+        //System.out.println("sda-<  "+ user.getPassword());
+
+
+        if (hashPassword.matches(password,user.getPassword())){
+            System.out.println("logged! ");
+            //System.out.println("id -> "+id);
+
+            //System.out.println("wasadbias +.> "+user1.getEmail());
+            String role = user.getRole();
+            System.out.println("role -> "+role);
+            return "redirect:/"+role;
+        }
+        else {
+            model.addAttribute("error", "pass errada");
+            return "login";
+        }
+    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "user";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
 
 }
