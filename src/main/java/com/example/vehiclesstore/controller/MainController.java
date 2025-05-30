@@ -101,18 +101,27 @@ public class MainController {
     @GetMapping("/Visualizarveiculos")
     public String listarVeiculos(@RequestParam(required = false) String marca,
                                  @RequestParam(required = false) String ano,
+                                 @RequestParam(required = false) Integer precoMax,
                                  Model model) {
 
         List<Veiculos> veiculos;
 
-        if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty()) {
+        if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty() && precoMax != null) {
+            veiculos = vehicleRepository.findByMarcaAndAnoAndPrecoLessThanEqual(marca, ano, precoMax);
+        } else if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty()) {
             veiculos = vehicleRepository.findByMarcaAndAno(marca, ano);
+        } else if (marca != null && !marca.isEmpty() && precoMax != null) {
+            veiculos = vehicleRepository.findByMarcaAndPrecoLessThanEqual(marca, precoMax);
+        } else if (ano != null && !ano.isEmpty() && precoMax != null) {
+            veiculos = vehicleRepository.findByAnoAndPrecoLessThanEqual(ano, precoMax);
         } else if (marca != null && !marca.isEmpty()) {
             veiculos = vehicleRepository.findByMarca(marca);
         } else if (ano != null && !ano.isEmpty()) {
             veiculos = vehicleRepository.findByAno(ano);
+        } else if (precoMax != null) {
+            veiculos = vehicleRepository.findByPrecoLessThanEqual(precoMax);
         } else {
-            veiculos = (List<Veiculos>) vehicleRepository.findAll();
+            veiculos = vehicleRepository.findAll();
         }
 
         model.addAttribute("veiculos", veiculos);
@@ -120,6 +129,7 @@ public class MainController {
         model.addAttribute("anoSelecionado", ano);
         model.addAttribute("marcas", vehicleRepository.listarMarcas());
         model.addAttribute("anos",  vehicleRepository.listarAnos());
+        model.addAttribute("precoMax", precoMax != null ? precoMax : 200000);
 
         return "Visualizarveiculos";
     }
