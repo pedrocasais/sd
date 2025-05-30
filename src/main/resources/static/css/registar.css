@@ -1,27 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     height: 100vh;
-    background-color: #1a1a1a;
+    background-color: #000;
+    background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.13), transparent),
+    radial-gradient(circle at 20% 80%, rgba(41, 196, 255, 0.13), transparent);
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.logo {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.logo img {
+    width: 200px;
+    height: auto;
 }
 
 form {
     padding: 2rem 3rem;
     border-radius: 12px;
     width: 600px;
-    background-color: #252525;
+    background-color: #1e1e1e;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 1;
 }
 
-/* Container para campos lado a lado */
+form h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
 .form-row {
     display: flex;
     gap: 10px;
@@ -44,10 +76,23 @@ form {
     width: 100%;
     border: none;
     border-radius: 10px;
-    background-color: #333333;
+    background-color: #2a2a2a;
     display: flex;
     align-items: center;
     padding: 12px 6px;
+    transition: background-color 0.3s ease;
+}
+
+.registar-email:hover,
+.registar-nome:hover,
+.registar-nome2:hover,
+.registar-movel:hover,
+.registar-morada:hover,
+.registar-cod:hover,
+.registar-loc:hover,
+.registar-password:hover,
+.registar-password2:hover {
+    background-color: #333;
 }
 
 .registar-email input,
@@ -67,6 +112,7 @@ form {
     outline: none;
     padding-left: 10px;
     font-size: 15px;
+    font-family: inherit;
 }
 
 .registar-checkbox {
@@ -94,22 +140,22 @@ i {
 
 button[type="submit"] {
     width: 100%;
-    background-color: #333333;
+    background-color: #2e2e2e;
     color: white;
     border: none;
     padding: 14px;
     font-size: 16px;
     border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.5s ease;
-    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    font-family: inherit;
 }
 
 button[type="submit"]:hover {
-    background-color: #ffffff;
-    color: #333333;
+    background-color: #4e4e4e;
+    color: white;
 }
 
 input::placeholder {
-    color: #888;
+    color: #aaa;
 }

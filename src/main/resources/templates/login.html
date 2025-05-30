@@ -1,24 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Login - AutoUBI</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" th:href="@{/login.css}">
+  <link rel="stylesheet" th:href="@{/css/login.css}">
+  <script th:src="@{/js/background.js}" defer></script>
 </head>
 <body>
+
+<div class="logo">
+  <a href="/">
+    <img src="/images/autoUBI.png" alt="Logo">
+  </a>
+</div>
+
+<canvas></canvas>
+
 <div class="login-form">
   <form action="/checkUser" method="get">
+
+    <h1>Login</h1>
+
     <div class="login-input">
       <i class="bi bi-person-fill"></i>
-      <input type="email" name="email" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email" required>
     </div>
+
     <div class="login-password">
-      <i id="image" class="bi bi-key-fill"></i>
-      <input type="password" name="password" placeholder="Password" required/>
+      <i class="bi bi-key-fill"></i>
+      <input type="password" name="password" placeholder="Password" required>
     </div>
-    <button class="login-btn" type="submit">Login</button>
-    <a href="/registar">cria conta o burro</a>
+
+    <button class="login-btn" type="submit">Entrar</button>
+
+    <a class="login-link" href="/registar">Criar conta</a>
   </form>
 </div>
 
