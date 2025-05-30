@@ -3,6 +3,7 @@ package com.example.vehiclesstore.controller;
 import com.example.vehiclesstore.model.Users;
 import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
+import com.example.vehiclesstore.services.SessionController;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.UUID;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -47,7 +50,16 @@ public class MainController {
     private PageableHandlerMethodArgumentResolverSupport pageableHandlerMethodArgumentResolverSupport;
 
     @GetMapping(path = "/")
-    public String getAllDeps(Model model) {
+    public String getAllDeps(Model model, HttpSession s) {
+
+        /**
+         * verifica se tem "sessão",
+         *      se sim -> mantem
+         *      se não -> cria uma nova sessão
+         */
+        SessionController.SessionController(s);
+
+        System.out.println(s);
         model.addAttribute("ListDeps", vehicleRepository.findAll());
         //loginRepository.deleteAll();
         //userRepository.deleteAll();
@@ -95,7 +107,10 @@ public class MainController {
     }
 
     @GetMapping("/checkUser")
-    public String loginUser(@RequestParam String email, @RequestParam String password, Model model){
+    public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
+
+        SessionController.SessionController(s);
+
         Users user = userRepository.findByEmail(email);
 
         if (user == null){
