@@ -1,6 +1,7 @@
 package com.example.vehiclesstore.controller;
 
 import com.example.vehiclesstore.model.Users;
+import com.example.vehiclesstore.model.Veiculos;
 import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
 import com.example.vehiclesstore.services.SessionController;
@@ -15,8 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -71,6 +76,65 @@ public class MainController {
     public String registar() {
         return "registar";
     }
+
+    // DIOGO VEICULOS
+    // Criar novo veiculo vindo do forms
+    @GetMapping("/admColocarVeiculo")
+    public String mostrarFormularioVeiculo(Model model) {
+        model.addAttribute("veiculo", new Veiculos());
+        return "admColocarVeiculo";
+    }
+
+    // POST para enviar do forms para a Base de Dados
+    @PostMapping("/admColocarVeiculo")
+    public String salvarVeiculo(@ModelAttribute Veiculos veiculo) {
+        vehicleRepository.save(veiculo);
+        return "redirect:/admColocarVeiculo?success";
+    }
+
+    @GetMapping("/eliminarVeiculo")
+    public String eliminar(@RequestParam Integer id) {
+        vehicleRepository.deleteById(id);
+        return "redirect:/Visualizarveiculos";
+    }
+
+    @GetMapping("/Visualizarveiculos")
+    public String listarVeiculos(@RequestParam (required = false) String marca, @RequestParam (required = false) String ano, Model model) {
+        List<Veiculos> veiculos = (List<Veiculos>) vehicleRepository.findAll();
+        model.addAttribute("veiculos", veiculos);
+
+        if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty()) {
+            veiculos = vehicleRepository.findByMarcaAndAno(marca, ano);
+        } else if (marca != null && !marca.isEmpty()) {
+            veiculos = vehicleRepository.findByMarca(marca);
+        } else if (ano != null && !ano.isEmpty()) {
+            veiculos = vehicleRepository.findByAno(ano);
+        } else {
+            veiculos = vehicleRepository.findAll();
+        }
+
+        List<String> marcas = new ArrayList<>();
+        marcas.add("Ferrari");
+        marcas.add("Volkswagen");
+        marcas.add("BMW");
+        marcas.add("Toyota");
+
+        List<String> anos = new ArrayList<>();
+        anos.add("2025");
+        anos.add("2015");
+        anos.add("2010");
+        anos.add("2005");
+
+        model.addAttribute("marcaSelecionada", marca);
+        model.addAttribute("anoSelecionado", ano);
+
+        model.addAttribute("marcas", marcas);
+        model.addAttribute("anos", anos);
+
+        return "Visualizarveiculos";
+    }
+
+    // DIOGO VEICULOS
 
     @PostMapping("/addUser")
     public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){

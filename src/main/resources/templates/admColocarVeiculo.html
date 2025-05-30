@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Veiculo</title>
+</head>
+<body>
+
+<form action="/admColocarVeiculo" method="post">
+    Marca: <input type="text" name="marca" />
+    Modelo: <input type="text" name="modelo" />
+    Categoria: <input type="text" name="categoria" />
+    Ano: <input type="text" name="ano" />
+    Cor: <input type="text" name="cor" />
+    Preço: <input type="number" name="preco" />
+    <button type="submit">Salvar Veículo</button>
+</form>
+
+<form action="/eliminarVeiculo" method="get" onsubmit="return confirm('Queres mesmo eliminar, olha aiiii?');">
+    <label for="id">ID do Veículo para eliminar:</label>
+    <input type="number" name="id" id="id" required />
+    <button type="submit">Eliminar Veículo</button>
+</form>
+
+<a th:href="@{/Visualizarveiculos}" class="back-button">Visualizar Veiculos Introduzidos</a>
+
+</body>
+</html>
