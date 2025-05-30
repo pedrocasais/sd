@@ -18,7 +18,7 @@
 <canvas></canvas>
 
 <div class="login-form">
-  <form action="/checkUser" method="get">
+  <form action="/checkUser" method="post">
 
     <h1>Login</h1>
 
@@ -36,6 +36,10 @@
 
     <a class="login-link" href="/registar">Criar conta</a>
   </form>
+</div>
+
+<div th:if="${error}" class="login-error">
+  <p th:text="${error}"></p>
 </div>
 
 </body>

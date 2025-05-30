@@ -73,20 +73,25 @@ public class MainController {
     }
 
     @PostMapping("/addUser")
-    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
-        if (userRepository.findByEmail(email) != null){
-            return "redirect:/registar?error  -> email";
+    public String registUser(
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String password2,
+            @RequestParam String nome,
+            @RequestParam Long tel,
+            @RequestParam String morada,
+            HttpSession session
+    ) {
+        if (userRepository.findByEmail(email) != null) {
+            return "redirect:/registar?error=email";
         }
 
-        if (!password.equals(password2)){
-            return "redirect:/registar?pass not match";
+        if (!password.equals(password2)) {
+            return "redirect:/registar?error=pass";
         }
 
         Users user = new Users();
-        //user.setID(1);
         user.setEmail(email);
-        //BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-        //user.setPassword(bc.encode(password));
         user.setPassword(hashPassword.encode(password));
         user.setRole("user");
         user.setNome(nome);
@@ -94,41 +99,42 @@ public class MainController {
         user.setNumTelemovel(tel);
 
         userRepository.save(user);
-        System.out.println("added!");
 
-        return "redirect:/";
+        // ✅ Inicia sessão automaticamente
+        session.setAttribute("email", user.getEmail());
+
+        return "redirect:/user"; // ou "/perfil" se preferir
     }
+
 
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @GetMapping("/checkUser")
-    public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
+    @PostMapping("/checkUser")
+    public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s) {
 
-        SessionController.SessionController(s);
+        try {
+            SessionController.SessionController(s);
 
-        Users user = userRepository.findByEmail(email);
+            Users user = userRepository.findByEmail(email);
 
-        if (user == null){
-            model.addAttribute("error", "email errada");
-            return "login";
-        }
-        //System.out.println("sda-<  "+ user.getPassword());
+            if (user == null) {
+                model.addAttribute("error", "Email não encontrado.");
+                return "login";
+            }
 
+            if (hashPassword.matches(password, user.getPassword())) {
+                s.setAttribute("email", user.getEmail());
+                return "redirect:/" + user.getRole();
+            } else {
+                model.addAttribute("error", "Password incorreta.");
+                return "login";
+            }
 
-        if (hashPassword.matches(password,user.getPassword())){
-            System.out.println("logged! ");
-            //System.out.println("id -> "+id);
-
-            //System.out.println("wasadbias +.> "+user1.getEmail());
-            String role = user.getRole();
-            System.out.println("role -> "+role);
-            return "redirect:/"+role;
-        }
-        else {
-            model.addAttribute("error", "pass errada");
+        } catch (Exception e) {
+            model.addAttribute("error", "Erro interno no login.");
             return "login";
         }
     }
@@ -137,6 +143,54 @@ public class MainController {
     public String user() {
         return "user";
     }
+
+    @GetMapping("/perfil")
+    public String perfil(HttpSession session, Model model) {
+        Object userEmail = session.getAttribute("email"); // ou use SessionController
+
+        if (userEmail == null) {
+            return "redirect:/login"; // Proteção extra
+        }
+
+        Users user = userRepository.findByEmail(userEmail.toString());
+        model.addAttribute("user", user);
+        return "perfil";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // encerra a sessão
+        return "redirect:"; // volta à página de login
+    }
+
+    @PostMapping("/alterar-password")
+    public String alterarPassword(@RequestParam String novaPassword,
+                                  @RequestParam String confirmarPassword,
+                                  HttpSession session) {
+
+        Object email = session.getAttribute("email");
+
+        if (email == null || !novaPassword.equals(confirmarPassword)) {
+            System.out.println("Erro: Email ausente ou passwords não coincidem");
+            return "redirect:/perfil?error";
+        }
+
+        Users user = userRepository.findByEmail(email.toString());
+
+        if (user == null) {
+            System.out.println("Erro: Utilizador não encontrado");
+            return "redirect:/perfil?error";
+        }
+
+        String hashed = hashPassword.encode(novaPassword);
+        user.setPassword(hashed);
+        userRepository.save(user);
+
+        System.out.println("Nova password (hashed): " + hashed);
+        return "redirect:/perfil?success";
+    }
+
+
 
     @GetMapping("/admin")
     public String admin() {
