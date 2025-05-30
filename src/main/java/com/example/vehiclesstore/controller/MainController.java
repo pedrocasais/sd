@@ -99,9 +99,11 @@ public class MainController {
     }
 
     @GetMapping("/Visualizarveiculos")
-    public String listarVeiculos(@RequestParam (required = false) String marca, @RequestParam (required = false) String ano, Model model) {
-        List<Veiculos> veiculos = (List<Veiculos>) vehicleRepository.findAll();
-        model.addAttribute("veiculos", veiculos);
+    public String listarVeiculos(@RequestParam(required = false) String marca,
+                                 @RequestParam(required = false) String ano,
+                                 Model model) {
+
+        List<Veiculos> veiculos;
 
         if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty()) {
             veiculos = vehicleRepository.findByMarcaAndAno(marca, ano);
@@ -110,7 +112,7 @@ public class MainController {
         } else if (ano != null && !ano.isEmpty()) {
             veiculos = vehicleRepository.findByAno(ano);
         } else {
-            veiculos = vehicleRepository.findAll();
+            veiculos = (List<Veiculos>) vehicleRepository.findAll();
         }
 
         List<String> marcas = new ArrayList<>();
@@ -125,14 +127,15 @@ public class MainController {
         anos.add("2010");
         anos.add("2005");
 
+        model.addAttribute("veiculos", veiculos);
         model.addAttribute("marcaSelecionada", marca);
         model.addAttribute("anoSelecionado", ano);
-
         model.addAttribute("marcas", marcas);
         model.addAttribute("anos", anos);
 
         return "Visualizarveiculos";
     }
+
 
     // DIOGO VEICULOS
 
