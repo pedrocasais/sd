@@ -7,8 +7,7 @@
   <link rel="stylesheet" th:href="@{/login.css}">
 </head>
 <body>
-<div class="login-form">
-  <form action="/checkUser" method="get">
+  <form method="post" action="/checkUser" >
     <div class="login-input">
       <i class="bi bi-person-fill"></i>
       <input type="email" name="email" placeholder="Username" required>
@@ -20,7 +19,6 @@
     <button class="login-btn" type="submit">Login</button>
     <a href="/registar">cria conta o burro</a>
   </form>
-</div>
 
 </body>
 </html>

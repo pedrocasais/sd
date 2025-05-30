@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -92,7 +93,7 @@ public class MainController {
         //BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
         //user.setPassword(bc.encode(password));
         user.setPassword(hashPassword.encode(password));
-        user.setRole("user");
+        user.setRole("ROLE_USER");
         user.setNome(nome);
         user.setMorada(morada);
         user.setNumTelemovel(tel);
@@ -110,7 +111,7 @@ public class MainController {
 
     @GetMapping("/checkUser")
     public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
-       return Login.login(email, password, userRepository);
+       return "user";
     }
 
     @GetMapping("/user")
