@@ -3,12 +3,14 @@ package com.example.vehiclesstore.controller;
 import com.example.vehiclesstore.model.Users;
 import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
+import com.example.vehiclesstore.services.Login;
 import com.example.vehiclesstore.services.SessionController;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.context.annotation.Role;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -74,7 +76,7 @@ public class MainController {
         return "registar";
     }
 
-    @PostMapping("/addUser")
+    @PostMapping("/registo")
     public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
         if (userRepository.findByEmail(email) != null){
             return "redirect:/registar?error  -> email";
@@ -108,37 +110,14 @@ public class MainController {
 
     @GetMapping("/checkUser")
     public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
-
-        SessionController.SessionController(s);
-
-        Users user = userRepository.findByEmail(email);
-
-        if (user == null){
-            model.addAttribute("error", "email errada");
-            return "login";
-        }
-        //System.out.println("sda-<  "+ user.getPassword());
-
-
-        if (hashPassword.matches(password,user.getPassword())){
-            System.out.println("logged! ");
-            //System.out.println("id -> "+id);
-
-            //System.out.println("wasadbias +.> "+user1.getEmail());
-            String role = user.getRole();
-            System.out.println("role -> "+role);
-            return "redirect:/"+role;
-        }
-        else {
-            model.addAttribute("error", "pass errada");
-            return "login";
-        }
+       return Login.login(email, password, userRepository);
     }
 
     @GetMapping("/user")
     public String user() {
         return "user";
     }
+
 
     @GetMapping("/admin")
     public String admin() {
