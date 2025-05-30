@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="ISO-8859-1">
+    <meta charset="UTF-8">
     <title>Veiculos Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
+
 <body>
-<div>
-    <button onclick="window.location.href='/login'">login</button>
-    <button onclick="window.location.href='/registar'">registar</button>
-    <h1>Lista de Veiculos</h1>
-    <a th:href="@{/showNewVeiculoForm}">Adicionar Veiculo</a>
-    <table border="1" class="table table-striped table-responsive-md">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Marca</th>
-            <th>Categoria</th>
-            <th>Modelo</th>
-            <th>Ano</th>
-            <th>Placa</th>
-            <th>Cor</th>
-            <th>Preco</th>
-            <th>Acoes</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="veiculo : ${listaVeiculos}">
-            <td th:text="${veiculo.ID}"></td>
-            <td th:text="${veiculo.marca}"></td>
-            <td th:text="${veiculo.categoria}"></td>
-            <td th:text="${veiculo.modelo}"></td>
-            <td th:text="${veiculo.ano}"></td>
-            <td th:text="${veiculo.placa}"></td>
-            <td th:text="${veiculo.cor}"></td>
-            <td th:text="${veiculo.preco}"></td>
-            <td>
-                <a th:href="@{/showUpdateVeiculoForm/{id}(id=${veiculo.ID})}">Atualizar</a>
-                <a th:href="@{/deleteVeiculo/{id}(id=${veiculo.ID})}">Deletar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+
+<div class="logo">
+    <h1>LOGO</h1>
 </div>
+<div class="auth-buttons">
+        <a class="btn-login" onclick="window.location.href='/login'">
+            <i class="bi bi-person-fill"></i>
+        </a>
+</div>
+
+<div class="menu">
+    <i class="bi bi-list"></i>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div class="menu-off">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/veiculos">Veículos</a></li>
+        <li><a href="/estatisticas">Estatísticas</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/sobre">Sobre nós</a></li>
+    </ul>
+</div>
+
+<div class="search-bar">
+    <form class="search-form">
+        <input type="text" placeholder="pesquisa">
+        <a type="submit">
+            <i class="bi bi-search"></i>
+        </a>
+    </form>
+</div>
+
+<script th:src="@{/script.js}"></script>
 </body>
 </html>
