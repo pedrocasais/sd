@@ -75,7 +75,7 @@ public class MainController {
     }
 
     @PostMapping("/addUser")
-    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
+    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ,@RequestParam String localidade, @RequestParam String nome2, @RequestParam String codPostal ){
         if (userRepository.findByEmail(email) != null){
             return "redirect:/registar?error  -> email";
         }
@@ -94,6 +94,9 @@ public class MainController {
         user.setNome(nome);
         user.setMorada(morada);
         user.setNumTelemovel(tel);
+        user.setApelido(nome2);
+        user.setCodPostal(codPostal);
+        user.setLocalidade(localidade);
 
         userRepository.save(user);
         System.out.println("added!");
@@ -119,7 +122,6 @@ public class MainController {
         }
         //System.out.println("sda-<  "+ user.getPassword());
 
-
         if (hashPassword.matches(password,user.getPassword())){
             System.out.println("logged! ");
             //System.out.println("id -> "+id);
@@ -127,6 +129,7 @@ public class MainController {
             //System.out.println("wasadbias +.> "+user1.getEmail());
             String role = user.getRole();
             System.out.println("role -> "+role);
+
             return "redirect:/"+role;
         }
         else {
@@ -145,4 +148,9 @@ public class MainController {
         return "admin";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
 }
