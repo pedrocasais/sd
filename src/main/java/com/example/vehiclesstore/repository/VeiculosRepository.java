@@ -17,6 +17,12 @@ public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
 
     List<Veiculos> findAll();
 
+    @Query("SELECT DISTINCT v.marca FROM Veiculos v ORDER BY v.marca")
+    List<String> listarMarcas();
+
+    @Query("SELECT DISTINCT v.ano FROM Veiculos v ORDER BY v.ano DESC")
+    List<String> listarAnos();
+
 }
 
 

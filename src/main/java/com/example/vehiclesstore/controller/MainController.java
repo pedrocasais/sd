@@ -115,23 +115,11 @@ public class MainController {
             veiculos = (List<Veiculos>) vehicleRepository.findAll();
         }
 
-        List<String> marcas = new ArrayList<>();
-        marcas.add("Ferrari");
-        marcas.add("Volkswagen");
-        marcas.add("BMW");
-        marcas.add("Toyota");
-
-        List<String> anos = new ArrayList<>();
-        anos.add("2025");
-        anos.add("2015");
-        anos.add("2010");
-        anos.add("2005");
-
         model.addAttribute("veiculos", veiculos);
         model.addAttribute("marcaSelecionada", marca);
         model.addAttribute("anoSelecionado", ano);
-        model.addAttribute("marcas", marcas);
-        model.addAttribute("anos", anos);
+        model.addAttribute("marcas", vehicleRepository.listarMarcas());
+        model.addAttribute("anos",  vehicleRepository.listarAnos());
 
         return "Visualizarveiculos";
     }
