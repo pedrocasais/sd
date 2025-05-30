@@ -1,16 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-body{
-    background-color: #c7e9fb;
-    background-image: linear-gradient(315deg, #c7e9fb 0%, #e61d8c 74%);
-
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #000;
+    background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.13), transparent),
+    radial-gradient(circle at 20% 80%, rgba(41, 196, 255, 0.13), transparent);
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
 }
 
-.logo{
-    position: absolute;
-    top: 10px;
-    right: 50%;
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
 }
 
+.logo img {
+    max-width: 250px;
+    height: auto;
+}
 
 .auth-buttons {
     position: absolute;
@@ -160,4 +173,13 @@ body{
     color: white;
     cursor: pointer;
     padding-right: 30px;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }

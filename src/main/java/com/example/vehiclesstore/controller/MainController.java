@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.UUID;
-
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
  * catálogo de produtos estruturado.
@@ -63,7 +61,7 @@ public class MainController {
         model.addAttribute("ListDeps", vehicleRepository.findAll());
         //loginRepository.deleteAll();
         //userRepository.deleteAll();
-        return "index";
+        return "main";
     }
 
     @Autowired
