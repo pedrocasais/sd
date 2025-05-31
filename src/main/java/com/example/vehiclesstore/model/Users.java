@@ -12,13 +12,40 @@ public class Users{
     private Long ID;
     private String role;
     private String nome;
+    private String apelido;
     private String morada;
+    private String codPostal;
+    private String localidade;
     private Long numTelemovel;
     private String password;
     private String email;
 
     // TODO: nao sei quais sao os outros fields
 
+
+    public String getApelido() {
+        return apelido;
+    }
+
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
+    }
+
+    public String getCodPostal() {
+        return codPostal;
+    }
+
+    public void setCodPostal(String codPostal) {
+        this.codPostal = codPostal;
+    }
+
+    public String getLocalidade() {
+        return localidade;
+    }
+
+    public void setLocalidade(String localidade) {
+        this.localidade = localidade;
+    }
 
     public String getMorada() {
         return morada;

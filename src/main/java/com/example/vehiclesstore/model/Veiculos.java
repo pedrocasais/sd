@@ -1,6 +1,8 @@
 package com.example.vehiclesstore.model;
 import jakarta.persistence.*;
 
+import java.sql.Blob;
+
 @Entity
 public class Veiculos {
 
@@ -15,6 +17,18 @@ public class Veiculos {
     private String cor;
     private int preco;
 
+
+    @Lob
+    private Blob image;
+
+
+    public Blob getImage() {
+        return image;
+    }
+
+    public void setImage(Blob image) {
+        this.image = image;
+    }
 
     public int getID() {
         return ID;

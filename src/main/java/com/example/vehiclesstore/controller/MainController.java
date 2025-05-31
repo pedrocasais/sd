@@ -19,10 +19,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.Random;
+
 import java.util.Optional;
+
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -64,7 +71,20 @@ public class MainController {
         SessionController.SessionController(s);
 
         System.out.println(s);
-        model.addAttribute("ListDeps", vehicleRepository.findAll());
+        //model.addAttribute("ListDeps", vehicleRepository.findAll());
+        Random r = new Random();
+        int n = (int)vehicleRepository.count();
+        System.out.println("sdas _> "+n);
+        List<Veiculos> listaVeiculos = new ArrayList<>();
+
+        for(int i = 0; i < 8; i++) {
+            Veiculos veiculo = vehicleRepository.findByID(r.nextInt(n));
+            if (veiculo != null) {
+                listaVeiculos.add(veiculo);
+            }
+        }
+
+        model.addAttribute("veiculos", listaVeiculos);
         //loginRepository.deleteAll();
         //userRepository.deleteAll();
         return "main";
@@ -150,7 +170,7 @@ public class MainController {
         model.addAttribute("marcaSelecionada", marca);
         model.addAttribute("anoSelecionado", ano);
         model.addAttribute("marcas", vehicleRepository.listarMarcas());
-        model.addAttribute("anos",  vehicleRepository.listarAnos());
+        model.addAttribute("anos", vehicleRepository.listarAnos());
         model.addAttribute("precoMax", precoMax != null ? precoMax : 2000000);
 
         return "Visualizarveiculos";
@@ -214,7 +234,7 @@ public class MainController {
         Users user = new Users();
         user.setEmail(email);
         user.setPassword(hashPassword.encode(password));
-        user.setRole("user");
+        user.setRole("use");
         user.setNome(nome);
         user.setMorada(morada);
         user.setNumTelemovel(tel);
@@ -262,7 +282,7 @@ public class MainController {
 
     @GetMapping("/USER")
     public String user() {
-        return "user";
+        return "USER";
     }
 
     @GetMapping("/perfil")
@@ -312,10 +332,44 @@ public class MainController {
     }
 
 
-
     @GetMapping("/admin")
     public String admin() {
         return "admin";
+    }
+
+
+    @GetMapping("/image")
+    public String image() {
+        return "image";
+    }
+    @GetMapping("/addImg")
+    public String mostrarFormularioImagem() {
+        return "image"; // Nome do ficheiro HTML do formulário (image.html)
+    }
+    @PostMapping("/addImg")
+    public String addImage( @RequestParam("image") MultipartFile imageFile) {
+            try {
+                Veiculos veiculo = vehicleRepository.findById(3).orElse(null);
+
+                if (!imageFile.isEmpty()) {
+                    assert veiculo != null;
+                    veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
+                }
+                vehicleRepository.save(veiculo);
+                return "redirect:/addImg?success";
+            } catch (Exception e) {
+                return "redirect:/addImg?error";
+            }
+    }
+
+    @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
+    @ResponseBody
+    public byte[] mostrarImagem(@PathVariable int id) throws Exception {
+        Veiculos veiculo = vehicleRepository.findById(id).orElse(null);
+        if (veiculo != null && veiculo.getImage() != null) {
+            return veiculo.getImage().getBytes(1, (int) veiculo.getImage().length());
+        }
+        return new byte[0];
     }
 
 }

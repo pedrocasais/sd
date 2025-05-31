@@ -14,9 +14,9 @@
 </div>
 
 <div class="auth-buttons">
-        <a class="btn-login" onclick="window.location.href='/login'">
-            <i class="bi bi-person-fill"></i>
-        </a>
+    <a class="btn-login" onclick="window.location.href='/login'">
+        <i class="bi bi-person-fill"></i>
+    </a>
 </div>
 
 <div class="menu">
@@ -45,9 +45,24 @@
     </form>
 </div>
 
+<div class="carousel-container">
+    <div class="carousel">
+        <article th:each="veiculo : ${veiculos}">
+            <img th:src="@{/veiculo/imagem/{id}(id=${veiculo.ID})}" alt="Imagem do veículo">
+            <h2 th:text="${veiculo.marca}">Marca</h2>
+            <p th:text="${veiculo.modelo}">Detalhes</p>
+            <a th:href="@{/veiculo/{id}(id=${veiculo.ID})}">Ver mais</a>
+        </article>
+    </div>
+    <div class="carousel-nav nav-prev"><i class="bi bi-chevron-left"></i></div>
+    <div class="carousel-nav nav-next"><i class="bi bi-chevron-right"></i></div>
+</div>
+
 <canvas></canvas>
 
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/background.js}"></script>
+<script th:src="@{/js/images.js}"></script>
+
 </body>
 </html>
