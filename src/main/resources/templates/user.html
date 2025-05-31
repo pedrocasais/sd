@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script th:src="@{/js/background.js}" defer></script>
 </head>
 <body>
-user
+
+<canvas></canvas>
 
 <div class="logo">
-    <h1>LOGO</h1>
+    <a href="/user">
+        <img src="/images/autoUBI.png" alt="Logo">
+    </a>
 </div>
+
 <div class="auth-buttons">
-    <a class="btn-login" onclick="window.location.href='/login'">
+    <a class="btn-login" onclick="window.location.href='/perfil'">
         <i class="bi bi-person-fill"></i>
     </a>
 </div>
@@ -44,6 +49,6 @@ user
     </form>
 </div>
 
-<script th:src="@{/script.js}"></script>
+<script th:src="@{/js/script.js}"></script>
 </body>
 </html>

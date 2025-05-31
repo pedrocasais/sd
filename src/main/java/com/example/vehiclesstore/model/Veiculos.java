@@ -12,7 +12,6 @@ public class Veiculos {
     private String categoria;
     private String modelo;
     private String ano;
-    private String placa;
     private String cor;
     private int preco;
 
@@ -39,14 +38,6 @@ public class Veiculos {
 
     public void setCor(String cor) {
         this.cor = cor;
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
     }
 
     public String getAno() {

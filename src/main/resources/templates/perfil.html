@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil</title>
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
+    <script th:src="@{/js/background.js}" defer></script>
+</head>
+<body>
+
+<div class="logo">
+    <a href="/user">
+        <img src="/images/autoUBI.png" alt="Logo">
+    </a>
+</div>
+
+<div class="perfil-container">
+    <h1>Olá, <span th:text="${user.nome}">Nome</span></h1>
+    <p>Email: <span th:text="${user.email}">email@exemplo.com</span></p>
+    <p>Morada: <span th:text="${user.morada}">morada</span></p>
+    <p>Telemóvel: <span th:text="${user.numTelemovel}">912345678</span></p>
+
+    <h2>Alterar password</h2>
+    <form action="/alterar-password" method="post">
+        <input type="password" name="novaPassword" placeholder="Nova password" required />
+        <input type="password" name="confirmarPassword" placeholder="Confirmar password" required />
+        <button type="submit">Atualizar</button>
+    </form>
+
+    <form action="/logout" method="post" style="margin-top: 20px;">
+        <button type="submit" class="logout-btn">Sair</button>
+    </form>
+
+</div>
+
+<div th:if="${param.success}" style="color: lightgreen; text-align: center;">Password atualizada com sucesso!</div>
+<div th:if="${param.error}" style="color: red; text-align: center;">Erro ao atualizar a password!</div>
+
+<canvas></canvas>
+
+</body>
+</html>

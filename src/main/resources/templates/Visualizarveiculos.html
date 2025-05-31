@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Visualizar Veículos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        form {
+            width: 90%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        select, input[type=range] {
+            padding: 5px;
+            font-size: 14px;
+        }
+        button {
+            padding: 6px 12px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #cde5ff;
+        }
+        .back-button {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            text-align: center;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .back-button:hover {
+            background-color: #1e7e34;
+        }
+        /* Pequeno ajuste para o span do preço */
+        #precoValor {
+            min-width: 60px;
+            display: inline-block;
+            text-align: center;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Lista de Veículos</h1>
+
+<form method="get" action="/Visualizarveiculos">
+    <div>
+        <label for="marca">Marca:</label>
+        <select name="marca" id="marca">
+            <option value="">-- Todas --</option>
+            <th:block th:each="m : ${marcas}">
+                <option th:value="${m}" th:text="${m}"
+                        th:selected="${m == marcaSelecionada}"></option>
+            </th:block>
+        </select>
+    </div>
+
+    <div>
+        <label for="ano">Ano:</label>
+        <select name="ano" id="ano">
+            <option value="">-- Todos --</option>
+            <th:block th:each="a : ${anos}">
+                <option th:value="${a}" th:text="${a}"
+                        th:selected="${a == anoSelecionado}"></option>
+            </th:block>
+        </select>
+    </div>
+
+    <div>
+        <label for="precoMax">Preço Máximo:</label>
+        <input type="range" id="precoMax" name="precoMax" min="0" max="2000000" step="1000"
+               th:value="${precoMax != null ? precoMax : 2000000}"
+               oninput="document.getElementById('precoValor').innerText = this.value" />
+        <span id="precoValor" th:text="${precoMax != null ? precoMax : 2000000}">2000000</span>
+    </div>
+
+    <button type="submit">Filtrar</button>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Ano</th>
+        <th>Cor</th>
+        <th>Categoria</th>
+        <th>Preço</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="veiculo : ${veiculos}">
+        <td th:text="${veiculo.ID}">1</td>
+        <td th:text="${veiculo.marca}">Ferrari</td>
+        <td th:text="${veiculo.modelo}">LaFerrari</td>
+        <td th:text="${veiculo.ano}">2015</td>
+        <td th:text="${veiculo.cor}">Vermelho</td>
+        <td th:text="${veiculo.categoria}">Esportivo</td>
+        <td th:text="${#numbers.formatDecimal(veiculo.preco, 0, 'COMMA', 2, 'POINT')}">150000</td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/admColocarVeiculo}" class="back-button">Voltar à Página de Adição de Veículos</a>
+
+</body>
+</html>
