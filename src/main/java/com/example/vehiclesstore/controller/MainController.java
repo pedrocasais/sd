@@ -129,7 +129,7 @@ public class MainController {
         model.addAttribute("anoSelecionado", ano);
         model.addAttribute("marcas", vehicleRepository.listarMarcas());
         model.addAttribute("anos",  vehicleRepository.listarAnos());
-        model.addAttribute("precoMax", precoMax != null ? precoMax : 200000);
+        model.addAttribute("precoMax", precoMax != null ? precoMax : 2000000);
 
         return "Visualizarveiculos";
     }
