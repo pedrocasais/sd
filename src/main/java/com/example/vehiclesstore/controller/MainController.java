@@ -168,7 +168,7 @@ public class MainController {
         // ✅ Inicia sessão automaticamente
         session.setAttribute("email", user.getEmail());
 
-        return "redirect:/user"; // ou "/perfil" se preferir
+        return "redirect:/USER"; // ou "/perfil" se preferir
     }
 
 
@@ -204,7 +204,7 @@ public class MainController {
         }
     }
 
-    @GetMapping("/user")
+    @GetMapping("/USER")
     public String user() {
         return "user";
     }
