@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
-
+    Veiculos findByID(int id);
 
     List<Veiculos> findByMarcaAndAno(String marca, String ano);
 
