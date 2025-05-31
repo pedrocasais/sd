@@ -102,6 +102,19 @@ canvas {
     background-color: #4e4e4e;
 }
 
+.login-error {
+    background-color: #ff4444;
+    color: white;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    position: relative;
+    top: 20px;
+}
+
+
 .login-link,
 a {
     display: block;
