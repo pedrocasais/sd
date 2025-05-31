@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -87,8 +88,18 @@ public class MainController {
 
     // POST para enviar do forms para a Base de Dados
     @PostMapping("/admColocarVeiculo")
-    public String salvarVeiculo(@ModelAttribute Veiculos veiculo) {
+    public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
+    ) {
+        Veiculos veiculo = new Veiculos();
+        veiculo.setMarca(marca);
+        veiculo.setModelo(modelo);
+        veiculo.setCategoria(categoria);
+        veiculo.setAno(ano);
+        veiculo.setCor(cor);
+        veiculo.setPreco(preco);
+
         vehicleRepository.save(veiculo);
+
         return "redirect:/admColocarVeiculo?success";
     }
 
@@ -99,10 +110,21 @@ public class MainController {
     }
 
     @GetMapping("/Visualizarveiculos")
-    public String listarVeiculos(@RequestParam(required = false) String marca,
-                                 @RequestParam(required = false) String ano,
-                                 @RequestParam(required = false) Integer precoMax,
-                                 Model model) {
+    public String mostrarVeiculos(Model model) {
+        List<Veiculos> veiculos = vehicleRepository.findAll();
+
+        model.addAttribute("veiculos", veiculos);
+        model.addAttribute("marcaSelecionada", "");
+        model.addAttribute("anoSelecionado", "");
+        model.addAttribute("marcas", vehicleRepository.listarMarcas());
+        model.addAttribute("anos", vehicleRepository.listarAnos());
+        model.addAttribute("precoMax", 2000000);
+
+        return "Visualizarveiculos";
+    }
+
+    @PostMapping("/Visualizarveiculos")
+    public String listarVeiculos(@RequestParam(required = false) String marca, @RequestParam(required = false) String ano, @RequestParam(required = false) Integer precoMax, Model model) {
 
         List<Veiculos> veiculos;
 
@@ -133,6 +155,40 @@ public class MainController {
 
         return "Visualizarveiculos";
     }
+
+    @GetMapping("/modificarVeiculo")
+    public String editarVeiculo(@RequestParam("id") Integer id, Model model) {
+        Optional<Veiculos> veiculo = vehicleRepository.findById(id);
+        if (veiculo.isPresent()) {
+            model.addAttribute("veiculo", veiculo.get());
+            return "modificarVeiculo";
+        } else {
+            return "redirect:/Visualizarveiculos";
+        }
+    }
+
+    @PostMapping("/atualizarVeiculo")
+    public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
+    ) {
+        Optional<Veiculos> optionalVeiculo = vehicleRepository.findById(ID);
+
+        if (optionalVeiculo.isPresent()) {
+            Veiculos veiculo = optionalVeiculo.get();
+            veiculo.setMarca(marca);
+            veiculo.setModelo(modelo);
+            veiculo.setCategoria(categoria);
+            veiculo.setAno(ano);
+            veiculo.setCor(cor);
+            veiculo.setPreco(preco);
+
+            vehicleRepository.save(veiculo);
+        }
+
+        return "redirect:/Visualizarveiculos";
+    }
+
+
+
 
 
     // DIOGO VEICULOS
