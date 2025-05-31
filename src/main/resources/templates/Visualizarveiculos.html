@@ -119,7 +119,7 @@
 
     <div>
         <label for="precoMax">Preço Máximo:</label>
-        <input type="range" id="precoMax" name="precoMax" min="0" max="200000" step="1000"
+        <input type="range" id="precoMax" name="precoMax" min="0" max="2000000" step="1000"
                th:value="${precoMax != null ? precoMax : 2000000}"
                oninput="document.getElementById('precoValor').innerText = this.value" />
         <span id="precoValor" th:text="${precoMax != null ? precoMax : 2000000}">2000000</span>
