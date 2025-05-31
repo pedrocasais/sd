@@ -23,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -65,7 +67,20 @@ public class MainController {
         SessionController.SessionController(s);
 
         System.out.println(s);
-        model.addAttribute("ListDeps", vehicleRepository.findAll());
+        //model.addAttribute("ListDeps", vehicleRepository.findAll());
+        Random r = new Random();
+        int n = (int)vehicleRepository.count();
+        System.out.println("sdas _> "+n);
+        List<Veiculos> listaVeiculos = new ArrayList<>();
+
+        for(int i = 0; i < 8; i++) {
+            Veiculos veiculo = vehicleRepository.findByID(r.nextInt(n));
+            if (veiculo != null) {
+                listaVeiculos.add(veiculo);
+            }
+        }
+
+        model.addAttribute("veiculos", listaVeiculos);
         //loginRepository.deleteAll();
         //userRepository.deleteAll();
         return "main";

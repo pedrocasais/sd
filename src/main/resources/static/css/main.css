@@ -21,7 +21,7 @@ body {
 }
 
 .logo img {
-    max-width: 250px;
+    max-width: 200px;
     height: auto;
 }
 
@@ -139,7 +139,7 @@ body {
 }
 .search-bar{
     width: 100%;
-    min-height: 70vh;
+    min-height: 20vh;
     background-position: center;
     display: flex;
     align-items: center;
@@ -182,4 +182,98 @@ canvas {
     width: 100%;
     height: 100%;
     z-index: -1;
+}
+
+.carousel {
+    width: 80%;
+    margin: 0 auto;
+    overflow-x: auto;
+    display: flex;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 20px 0;
+    -ms-overflow-style: none;  /* IE e Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari e Opera */
+}
+
+.carousel article {
+    min-width: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    scroll-snap-align: start;
+}
+
+.carousel article:hover {
+    transform: translateY(-10px);
+}
+
+.carousel article img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.carousel article h2 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.carousel article p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.carousel article a {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    transition: background 0.3s ease;
+}
+
+.carousel article a:hover {
+    background: #555;
+}
+
+.carousel-container {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.nav-prev {
+    left: -50px;
+}
+
+.nav-next {
+    right: -50px;
 }
