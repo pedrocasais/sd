@@ -79,8 +79,8 @@ public class MainController {
 
     @PostMapping("/registo")
     public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
-        if (userRepository.findByEmail(email) != null){
-            return "redirect:/registar?error  -> email";
+        if (userRepository.findByEmail(email).isPresent()){
+            return "redirect:/registar?error=email";
         }
 
         if (!password.equals(password2)){
@@ -93,7 +93,7 @@ public class MainController {
         //BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
         //user.setPassword(bc.encode(password));
         user.setPassword(hashPassword.encode(password));
-        user.setRole("ROLE_USER");
+        user.setRole("USER");
         user.setNome(nome);
         user.setMorada(morada);
         user.setNumTelemovel(tel);
@@ -111,7 +111,7 @@ public class MainController {
 
     @GetMapping("/checkUser")
     public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
-       return "user";
+       return "redirect:/user";
     }
 
     @GetMapping("/user")

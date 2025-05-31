@@ -31,6 +31,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "/login","/checkUser", "/registar", "/registo").permitAll()
                         .requestMatchers("/user").hasRole("USER")
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -38,6 +39,7 @@ public class WebSecurityConfig {
                         .loginProcessingUrl("/checkUser")
                         .defaultSuccessUrl("/user", true)
                         .permitAll())
+
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
     }

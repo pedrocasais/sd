@@ -65,7 +65,7 @@ public class Users{
     }
 
     public void setRole(String role) {
-        this.role = "ROLE_" + role;
+        this.role = role;
     }
 
     public String getNome() {
