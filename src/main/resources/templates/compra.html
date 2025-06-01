@@ -5,6 +5,18 @@
     <title>Finalizar Compra</title>
     <link rel="stylesheet" th:href="@{/css/compra.css}">
     <script th:src="@{/js/background.js}" defer></script>
+    <script>
+        window.onload = function () {
+            if (window.location.pathname.includes("/recibo-txt")) {
+                setTimeout(() => {
+                    fetch("/role-redirect")
+                        .then(r => r.text())
+                        .then(path => window.location.href = path);
+                }, 1000);
+            }
+        };
+    </script>
+
 </head>
 <body>
 <canvas></canvas>

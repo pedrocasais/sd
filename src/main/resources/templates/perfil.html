@@ -20,6 +20,23 @@
     <p>Morada: <span th:text="${user.morada}">morada</span></p>
     <p>Telemóvel: <span th:text="${user.numTelemovel}">912345678</span></p>
 
+    <h2>Histórico de Compras</h2>
+
+    <div class="compras-lista">
+        <div th:if="${#lists.isEmpty(compras)}">
+            <p>Sem compras registadas.</p>
+        </div>
+
+        <ul th:each="compra : ${compras}">
+            <li>
+                <strong th:text="${compra.veiculo.marca + ' ' + compra.veiculo.modelo}"></strong>
+                - <span th:text="${compra.dataVenda}"></span> |
+                <span th:text="${compra.precoVenda + ' €'}"></span> |
+                <a th:href="@{'/recibo-txt/' + ${compra.idVenda}}" target="_blank" class="btn-fatura">📄 Fatura</a>
+            </li>
+        </ul>
+    </div>
+
     <h2>Alterar password</h2>
     <form action="/alterar-password" method="post">
         <input type="password" name="novaPassword" placeholder="Nova password" required />
