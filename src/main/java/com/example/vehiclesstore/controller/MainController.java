@@ -4,16 +4,24 @@ import com.example.vehiclesstore.model.Users;
 import com.example.vehiclesstore.model.Veiculos;
 import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
+import com.example.vehiclesstore.services.Login;
 import com.example.vehiclesstore.services.SessionController;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.context.annotation.Role;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -109,6 +117,7 @@ public class MainController {
     public String registar() {
         return "registar";
     }
+
 
     // DIOGO VEICULOS
     // Criar novo veiculo vindo do forms
@@ -258,7 +267,11 @@ public class MainController {
 
     // DIOGO VEICULOS
 
-    @PostMapping("/addUser")
+    @PostMapping("/registo")
+    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
+        if (userRepository.findByEmail(email).isPresent()){
+
+    /*@PostMapping("/addUser")
     public String registUser(
             @RequestParam String email,
             @RequestParam String password,
@@ -267,8 +280,9 @@ public class MainController {
             @RequestParam Long tel,
             @RequestParam String morada,
             HttpSession session
-    ) {
+    ) {*/
         if (userRepository.findByEmail(email) != null) {
+
             return "redirect:/registar?error=email";
         }
 
@@ -279,7 +293,8 @@ public class MainController {
         Users user = new Users();
         user.setEmail(email);
         user.setPassword(hashPassword.encode(password));
-        user.setRole("use");
+        user.setRole("USER");
+
         user.setNome(nome);
         user.setMorada(morada);
         user.setNumTelemovel(tel);
@@ -298,11 +313,16 @@ public class MainController {
         return "login";
     }
 
-    @PostMapping("/checkUser")
+
+    @GetMapping("/checkUser")
+    public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
+       //return "redirect:/user";
+
+   /* @PostMapping("/checkUser")
     public String loginUser(@RequestParam String email,
                             @RequestParam String password,
                             Model model,
-                            HttpSession session) {
+                            HttpSession session) {*/
 
         try {
             SessionController.SessionController(session);
@@ -332,7 +352,7 @@ public class MainController {
 
     @GetMapping("/USER")
     public String user() {
-        return "USER";
+        return "user";
     }
 
     @GetMapping("/perfil")
