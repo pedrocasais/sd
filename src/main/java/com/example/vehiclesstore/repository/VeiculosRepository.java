@@ -31,6 +31,10 @@ public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
 
     List<Veiculos> findByMarcaAndAnoAndPrecoLessThanEqual(String marca, String ano, Integer preco);
 
+    List<Veiculos> findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(String marca, String modelo);
+
+    List<Veiculos> findByEstadoNot(String estado);
+
 }
 
 
