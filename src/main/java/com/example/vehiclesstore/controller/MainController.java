@@ -562,11 +562,6 @@ public class MainController {
         return "image";
     }
 
-    @GetMapping("/estatisticas")
-    public String stats() {
-        return "estatisticas";
-    }
-
     @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
     @ResponseBody
     public byte[] mostrarImagem(@PathVariable int id) throws Exception {
