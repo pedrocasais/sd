@@ -9,27 +9,37 @@ import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import com.example.vehiclesstore.model.Users;
+import com.example.vehiclesstore.model.Veiculos;
+import com.example.vehiclesstore.model.Vendas;
+import com.example.vehiclesstore.repository.UsersRepository;
+import com.example.vehiclesstore.repository.VeiculosRepository;
+import com.example.vehiclesstore.repository.VendasRepository;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.util.Random;
-
 import java.util.Optional;
-
+import com.example.vehiclesstore.model.Veiculos;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.util.Random;
+import java.util.Optional;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -53,6 +63,8 @@ public class MainController {
     @Autowired
     private VeiculosRepository vehicleRepository;
 
+    @Autowired
+    private VendasRepository vendasRepository;
 
     @Autowired
     private UsersRepository userRepository;
@@ -287,31 +299,36 @@ public class MainController {
     }
 
     @PostMapping("/checkUser")
-    public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s) {
+    public String loginUser(@RequestParam String email,
+                            @RequestParam String password,
+                            Model model,
+                            HttpSession session) {
 
         try {
-            SessionController.SessionController(s);
-
+            SessionController.SessionController(session);
             Users user = userRepository.findByEmail(email);
 
-            if (user == null) {
-                model.addAttribute("error", "Email não encontrado.");
+            if (user == null || !hashPassword.matches(password, user.getPassword())) {
+                model.addAttribute("error", "Email ou password incorretos.");
                 return "login";
             }
 
-            if (hashPassword.matches(password, user.getPassword())) {
-                s.setAttribute("email", user.getEmail());
-                return "redirect:/" + user.getRole();
-            } else {
-                model.addAttribute("error", "Password incorreta.");
-                return "login";
+            session.setAttribute("email", user.getEmail());
+
+            // Redirecionamento após login
+            String destino = (String) session.getAttribute("redirectAfterLogin");
+            if (destino != null) {
+                session.removeAttribute("redirectAfterLogin");
+                return "redirect:" + destino;
             }
 
+            return "redirect:/" + user.getRole();
         } catch (Exception e) {
             model.addAttribute("error", "Erro interno no login.");
             return "login";
         }
     }
+
 
     @GetMapping("/USER")
     public String user() {
@@ -364,12 +381,177 @@ public class MainController {
         return "redirect:/perfil?success";
     }
 
+    @GetMapping("/vendas")
+    public String mostrarFormularioVenda(Model model) {
+        model.addAttribute("veiculos", vehicleRepository.findAll());
+        model.addAttribute("users", userRepository.findAll());
+        return "vendas";
+    }
+
+    @PostMapping("/registar-venda")
+    public String registarVenda(@RequestParam int veiculoId,
+                                @RequestParam Long userId,
+                                @RequestParam double precoVenda,
+                                @RequestParam String refPagamento,
+                                @RequestParam int nif) {
+
+        Vendas venda = new Vendas();
+        venda.setVeiculo(vehicleRepository.findById(veiculoId).orElse(null));
+        venda.setUser(userRepository.findById(userId.intValue()).orElse(null));
+        venda.setPrecoVenda(precoVenda);
+        venda.setRefPagamento(refPagamento);
+        venda.setNif(nif);
+        venda.setDataVenda(LocalDateTime.now());
+
+        vendasRepository.save(venda);
+
+        return "redirect:/vendas?success";
+    }
+
+    @GetMapping("/veiculos")
+    public String veiculos(@RequestParam(required = false) String marca,
+                           @RequestParam(required = false) String termo,
+                           @RequestParam(required = false) String ano,
+                           @RequestParam(required = false) Integer precoMax,
+                           Model model) {
+
+        List<Veiculos> veiculos;
+
+        if (termo != null && !termo.isBlank()) {
+            veiculos = vehicleRepository.findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(termo, termo);
+        } else if (marca != null && !marca.isBlank() && ano != null && !ano.isBlank() && precoMax != null) {
+            veiculos = vehicleRepository.findByMarcaAndAnoAndPrecoLessThanEqual(marca, ano, precoMax);
+        } else if (marca != null && !marca.isBlank() && ano != null && !ano.isBlank()) {
+            veiculos = vehicleRepository.findByMarcaAndAno(marca, ano);
+        } else if (marca != null && !marca.isBlank() && precoMax != null) {
+            veiculos = vehicleRepository.findByMarcaAndPrecoLessThanEqual(marca, precoMax);
+        } else if (ano != null && !ano.isBlank() && precoMax != null) {
+            veiculos = vehicleRepository.findByAnoAndPrecoLessThanEqual(ano, precoMax);
+        } else if (marca != null && !marca.isBlank()) {
+            veiculos = vehicleRepository.findByMarca(marca);
+        } else if (ano != null && !ano.isBlank()) {
+            veiculos = vehicleRepository.findByAno(ano);
+        } else if (precoMax != null) {
+            veiculos = vehicleRepository.findByPrecoLessThanEqual(precoMax);
+        } else {
+            veiculos = vehicleRepository.findByEstadoNot("vendido");
+        }
+
+        model.addAttribute("veiculos", veiculos);
+        model.addAttribute("marcas", vehicleRepository.listarMarcas());
+        model.addAttribute("anos", vehicleRepository.listarAnos());
+
+        return "veiculos";
+    }
+
+    @GetMapping("/veiculos/imagem/{id}")
+    @ResponseBody
+    public ResponseEntity<byte[]> obterImagem(@PathVariable int id) {
+        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
+
+        if (veiculoOpt.isPresent() && veiculoOpt.get().getImage() != null) {
+            try {
+                Blob imagemBlob = veiculoOpt.get().getImage();
+                byte[] imagemBytes = imagemBlob.getBytes(1, (int) imagemBlob.length());
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(imagemBytes);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/veiculo/{id}")
+    public String mostrarDetalhesVeiculo(@PathVariable int id, Model model) {
+        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
+        if (veiculoOpt.isEmpty()) {
+            return "redirect:/veiculos?erro=naoencontrado";
+        }
+
+        model.addAttribute("veiculo", veiculoOpt.get());
+        return "detalheVeiculo";
+    }
+
+    @GetMapping("/comprar/{id}")
+    public String comprar(@PathVariable int id, HttpSession session, Model model) {
+        Object email = session.getAttribute("email");
+
+        if (email == null) {
+            session.setAttribute("redirectAfterLogin", "/comprar/" + id);
+            return "redirect:/login";
+        }
+
+        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
+        if (veiculoOpt.isEmpty()) {
+            return "redirect:/veiculos";
+        }
+
+        model.addAttribute("veiculo", veiculoOpt.get());
+        return "compra";
+    }
+
+    @PostMapping("/confirmar-compra/{id}")
+    public String confirmarCompra(@PathVariable int id,
+                                  @RequestParam String refPagamento,
+                                  @RequestParam int nif,
+                                  HttpSession session) {
+
+        Object email = session.getAttribute("email");
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Users> userOpt = Optional.ofNullable(userRepository.findByEmail(email.toString()));
+        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
+
+        if (userOpt.isEmpty() || veiculoOpt.isEmpty()) {
+            return "redirect:/veiculos?erro";
+        }
+
+        // Criar venda
+        Vendas venda = new Vendas();
+        venda.setUser(userOpt.get());
+        venda.setVeiculo(veiculoOpt.get());
+        venda.setDataVenda(LocalDateTime.now());
+        venda.setPrecoVenda(veiculoOpt.get().getPreco());
+        venda.setNif(nif);
+        venda.setRefPagamento(refPagamento);
+
+        // Atualiza estado do veículo e salva
+        Veiculos veiculo = veiculoOpt.get();
+        veiculo.setEstado("vendido");
+        vehicleRepository.save(veiculo);
+
+        // Guarda a venda
+        vendasRepository.save(venda);
+
+        return "redirect:/veiculos?sucesso";
+    }
+
+    @GetMapping("/estatisticas")
+    public String estatisticas() {
+        return "estatisticas";
+    }
+
+    @GetMapping("/faq")
+    public String faq() {
+        return "faq";
+    }
+
+    @GetMapping("/sobre")
+    public String sobre() {
+        return "sobre";
+    }
 
     @GetMapping("/ADMIN")
     public String admin() {
         return "admin";
     }
-
 
     @GetMapping("/image")
     public String image() {
@@ -384,10 +566,6 @@ public class MainController {
     public String stats() {
         return "estatisticas";
     }
-
-
-
-
 
     @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
     @ResponseBody

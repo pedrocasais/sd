@@ -16,12 +16,10 @@ public class Veiculos {
     private String ano;
     private String cor;
     private int preco;
-    private String estado;
-
+    private String estado = "venda";
 
     @Lob
     private Blob image;
-
 
     public Blob getImage() {
         return image;
@@ -29,14 +27,6 @@ public class Veiculos {
 
     public void setImage(Blob image) {
         this.image = image;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 
     public int getID() {
@@ -94,4 +84,9 @@ public class Veiculos {
     public void setMarca(String marca) {
         this.marca = marca;
     }
+
+    public String getEstado() { return estado; }
+
+    public void setEstado(String estado) { this.estado = estado; }
+
 }
