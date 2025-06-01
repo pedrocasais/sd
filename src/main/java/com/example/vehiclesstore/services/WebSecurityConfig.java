@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -30,14 +32,25 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "/login","/checkUser", "/registar", "/registo").permitAll()
-                        .requestMatchers("/user").hasRole("USER")
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/USER").hasRole("USER")
+                        .requestMatchers("/ADMIN").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/checkUser")
-                        .defaultSuccessUrl("/user", true)
+                        .successHandler((request, response, authentication) -> {
+                            Set<String> roles = authentication.getAuthorities().stream()
+                                    .map(a -> a.getAuthority())
+                                    .collect(Collectors.toSet());
+
+                            if (roles.contains("ROLE_ADMIN")) {
+                                response.sendRedirect("/ADMIN");
+                            } else {
+                                response.sendRedirect("/USER");
+                            }
+                        })
+                        //.defaultSuccessUrl("/USER", true)
                         .permitAll())
 
                 .logout(LogoutConfigurer::permitAll);

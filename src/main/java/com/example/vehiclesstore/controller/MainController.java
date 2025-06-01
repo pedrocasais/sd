@@ -4,64 +4,52 @@ import com.example.vehiclesstore.model.Users;
 import com.example.vehiclesstore.model.Veiculos;
 import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
-import com.example.vehiclesstore.services.Login;
 import com.example.vehiclesstore.services.SessionController;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.context.annotation.Role;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.example.vehiclesstore.model.Users;
-import com.example.vehiclesstore.model.Veiculos;
 import com.example.vehiclesstore.model.Vendas;
-import com.example.vehiclesstore.repository.UsersRepository;
-import com.example.vehiclesstore.repository.VeiculosRepository;
 import com.example.vehiclesstore.repository.VendasRepository;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import com.example.vehiclesstore.model.Veiculos;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
 import java.util.Random;
-import java.util.Optional;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
  * catálogo de produtos estruturado.
- *
+ * <p>
  * Deverá permitir atualizar os produtos que vende; permitir vários tipos de consultas; fazer a gestão de vendas e dos stocks existentes.
  * Os clientes podem fazer compras online.
- *
+ * <p>
  * A um cliente, deve ser emitida uma fatura. Suponha que a fatura será paga quando da entrega do produto.
  * Ser possível obter informação sobre o funcionamento da loja: Quais os produtos mais/menos vendidos?
- *                                                              Quais os melhores clientes? Qual o valor faturado no dia/semana/mês? …
+ * Quais os melhores clientes? Qual o valor faturado no dia/semana/mês? …
  * Além das funcionalidades da aplicação devem ser tratados os aspetos de:
- *      - gestão de sessões na interação de cada utilizador com a aplicação;
- *      - segurança na gestão de sessões, na introdução de dados, e outros aspetos que considere importantes.
+ * - gestão de sessões na interação de cada utilizador com a aplicação;
+ * - segurança na gestão de sessões, na introdução de dados, e outros aspetos que considere importantes.
  */
 
 
@@ -93,11 +81,11 @@ public class MainController {
         System.out.println(s);
         //model.addAttribute("ListDeps", vehicleRepository.findAll());
         Random r = new Random();
-        int n = (int)vehicleRepository.count();
-        System.out.println("sdas _> "+n);
+        int n = (int) vehicleRepository.count();
+        System.out.println("n of cars _> " + n);
         List<Veiculos> listaVeiculos = new ArrayList<>();
 
-        for(int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             Veiculos veiculo = vehicleRepository.findByID(r.nextInt(n));
             if (veiculo != null) {
                 listaVeiculos.add(veiculo);
@@ -130,7 +118,7 @@ public class MainController {
     // POST para enviar do forms para a Base de Dados
     @PostMapping("/admColocarVeiculo")
     public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
-    ,@RequestParam("image") MultipartFile imageFile) {
+            , @RequestParam("image") MultipartFile imageFile) {
         Veiculos veiculo = new Veiculos();
         veiculo.setMarca(marca);
         veiculo.setModelo(modelo);
@@ -155,7 +143,7 @@ public class MainController {
 
 
     @PostMapping("/addImg")
-    public String addImage( @RequestParam("image") MultipartFile imageFile) {
+    public String addImage(@RequestParam("image") MultipartFile imageFile) {
         try {
             Veiculos veiculo = vehicleRepository.findById(3).orElse(null);
 
@@ -225,12 +213,12 @@ public class MainController {
     }
 
     @GetMapping("/modificar")
-    public String modificar(){
+    public String modificar() {
         return "modificar";
     }
 
     @GetMapping("/eliminar")
-    public String eliminar(){
+    public String eliminar() {
         return "eliminar";
     }
 
@@ -268,20 +256,17 @@ public class MainController {
     // DIOGO VEICULOS
 
     @PostMapping("/registo")
-    public String registUser(@RequestParam String email, @RequestParam String password,@RequestParam String password2,@RequestParam String nome, @RequestParam Long tel, @RequestParam String morada ){
-        if (userRepository.findByEmail(email).isPresent()){
+    public String registUser(@RequestParam String email,
+                             @RequestParam String password,
+                             @RequestParam String password2,
+                             @RequestParam String nome,
+                             @RequestParam Long tel,
+                             @RequestParam String morada,
+                             HttpSession s) {
 
-    /*@PostMapping("/addUser")
-    public String registUser(
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String password2,
-            @RequestParam String nome,
-            @RequestParam Long tel,
-            @RequestParam String morada,
-            HttpSession session
-    ) {*/
-        if (userRepository.findByEmail(email) != null) {
+        System.out.println("email -> " + email.toString());
+
+        if (userRepository.findByEmail(email).isPresent()) {
 
             return "redirect:/registar?error=email";
         }
@@ -302,9 +287,10 @@ public class MainController {
         userRepository.save(user);
 
         // ✅ Inicia sessão automaticamente
-        session.setAttribute("email", user.getEmail());
+        s.setAttribute("email", user.getEmail());
 
         return "redirect:/USER"; // ou "/perfil" se preferir
+
     }
 
 
@@ -314,41 +300,55 @@ public class MainController {
     }
 
 
-    @GetMapping("/checkUser")
-    public String loginUser(@RequestParam String email, @RequestParam String password, Model model, HttpSession s){
-       //return "redirect:/user";
 
-   /* @PostMapping("/checkUser")
-    public String loginUser(@RequestParam String email,
+
+
+    /*
+    @PostMapping("/checkUser")
+    public String loginUser(@RequestParam String username,
                             @RequestParam String password,
                             Model model,
-                            HttpSession session) {*/
+                            HttpSession s) {
 
-        try {
-            SessionController.SessionController(session);
-            Users user = userRepository.findByEmail(email);
 
-            if (user == null || !hashPassword.matches(password, user.getPassword())) {
-                model.addAttribute("error", "Email ou password incorretos.");
-                return "login";
-            }
+        System.out.println("aqui ");
 
-            session.setAttribute("email", user.getEmail());
+        SessionController.SessionController(s);
+        Optional<Users> user = Optional.ofNullable(userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
 
-            // Redirecionamento após login
-            String destino = (String) session.getAttribute("redirectAfterLogin");
-            if (destino != null) {
-                session.removeAttribute("redirectAfterLogin");
-                return "redirect:" + destino;
-            }
-
-            return "redirect:/" + user.getRole();
-        } catch (Exception e) {
-            model.addAttribute("error", "Erro interno no login.");
+        if (user.isEmpty() || !hashPassword.matches(password, user.get().getPassword())) {
+            model.addAttribute("error", "Email ou password incorretos.");
             return "login";
         }
+        System.out.println("dsad _> " + user.get().getRole());
+
+
+        s.setAttribute("email", user.get().getEmail());
+
+
+        // Redirecionamento após login
+        String destino = (String) s.getAttribute("redirectAfterLogin");
+        if (destino != null) {
+            s.removeAttribute("redirectAfterLogin");
+            return "redirect:" + destino;
+        }
+
+
+        String role = user.orElseThrow().getRole();
+        if ("ADMIN".equals(role)) {
+            return "redirect:/ADMIN";
+        } else if ("USER".equals(role)) {
+            return "redirect:/USER";
+        } else {
+            return "redirect:/login?error";
+        }
+
+
     }
 
+
+     */
 
     @GetMapping("/USER")
     public String user() {
@@ -363,7 +363,7 @@ public class MainController {
             return "redirect:/login"; // Proteção extra
         }
 
-        Users user = userRepository.findByEmail(userEmail.toString());
+        Users user = userRepository.findByEmail(userEmail.toString()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         model.addAttribute("user", user);
         return "perfil";
     }
@@ -386,8 +386,9 @@ public class MainController {
             return "redirect:/perfil?error";
         }
 
-        Users user = userRepository.findByEmail(email.toString());
+        Optional<Users> userOpt = userRepository.findByEmail(email.toString());
 
+        Users user = userOpt.get();
         if (user == null) {
             System.out.println("Erro: Utilizador não encontrado");
             return "redirect:/perfil?error";
@@ -408,24 +409,42 @@ public class MainController {
         return "vendas";
     }
 
-    @PostMapping("/registar-venda")
-    public String registarVenda(@RequestParam int veiculoId,
-                                @RequestParam Long userId,
-                                @RequestParam double precoVenda,
-                                @RequestParam String refPagamento,
-                                @RequestParam int nif) {
+    @PostMapping("/confirmar-compra/{id}")
+    public String confirmarCompra(@PathVariable int id,
+                                  @RequestParam String refPagamento,
+                                  @RequestParam int nif,
+                                  HttpSession session) {
 
+        Object email = session.getAttribute("email");
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Users> userOpt = userRepository.findByEmail(email.toString());
+        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
+
+        if (userOpt.isEmpty() || veiculoOpt.isEmpty()) {
+            return "redirect:/veiculos?erro";
+        }
+
+        // Criar venda
         Vendas venda = new Vendas();
-        venda.setVeiculo(vehicleRepository.findById(veiculoId).orElse(null));
-        venda.setUser(userRepository.findById(userId.intValue()).orElse(null));
-        venda.setPrecoVenda(precoVenda);
-        venda.setRefPagamento(refPagamento);
-        venda.setNif(nif);
+        venda.setUser(userOpt.get()); // Extrai o valor do Optional
+        venda.setVeiculo(veiculoOpt.get());
         venda.setDataVenda(LocalDateTime.now());
+        venda.setPrecoVenda(veiculoOpt.get().getPreco());
+        venda.setNif(nif);
+        venda.setRefPagamento(refPagamento);
 
+        // Atualiza estado do veículo e salva
+        Veiculos veiculo = veiculoOpt.get();
+        veiculo.setEstado("vendido");
+        vehicleRepository.save(veiculo);
+
+        // Guarda a venda
         vendasRepository.save(venda);
 
-        return "redirect:/vendas?success";
+        return "redirect:/veiculos?sucesso";
     }
 
     @GetMapping("/veiculos")
@@ -515,43 +534,6 @@ public class MainController {
         return "compra";
     }
 
-    @PostMapping("/confirmar-compra/{id}")
-    public String confirmarCompra(@PathVariable int id,
-                                  @RequestParam String refPagamento,
-                                  @RequestParam int nif,
-                                  HttpSession session) {
-
-        Object email = session.getAttribute("email");
-        if (email == null) {
-            return "redirect:/login";
-        }
-
-        Optional<Users> userOpt = Optional.ofNullable(userRepository.findByEmail(email.toString()));
-        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
-
-        if (userOpt.isEmpty() || veiculoOpt.isEmpty()) {
-            return "redirect:/veiculos?erro";
-        }
-
-        // Criar venda
-        Vendas venda = new Vendas();
-        venda.setUser(userOpt.get());
-        venda.setVeiculo(veiculoOpt.get());
-        venda.setDataVenda(LocalDateTime.now());
-        venda.setPrecoVenda(veiculoOpt.get().getPreco());
-        venda.setNif(nif);
-        venda.setRefPagamento(refPagamento);
-
-        // Atualiza estado do veículo e salva
-        Veiculos veiculo = veiculoOpt.get();
-        veiculo.setEstado("vendido");
-        vehicleRepository.save(veiculo);
-
-        // Guarda a venda
-        vendasRepository.save(venda);
-
-        return "redirect:/veiculos?sucesso";
-    }
 
     @GetMapping("/estatisticas")
     public String estatisticas() {
@@ -577,6 +559,7 @@ public class MainController {
     public String image() {
         return "image";
     }
+
     @GetMapping("/addImg")
     public String mostrarFormularioImagem() {
         return "image";
