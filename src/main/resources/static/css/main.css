@@ -122,6 +122,11 @@ body {
 .menu-off li:nth-child(3) { transition-delay: 0.3s; }
 .menu-off li:nth-child(4) { transition-delay: 0.4s; }
 .menu-off li:nth-child(5) { transition-delay: 0.5s; }
+.menu-off li:nth-child(6) { transition-delay: 0.6s; }
+.menu-off li:nth-child(7) { transition-delay: 0.7s; }
+.menu-off li:nth-child(8) { transition-delay: 0.8s; }
+.menu-off li:nth-child(9) { transition-delay: 0.9s; }
+.menu-off li:nth-child(10) { transition-delay: 1s; }
 
 .menu-off a {
     color: #fff;
