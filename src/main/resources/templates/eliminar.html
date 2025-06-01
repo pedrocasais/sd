@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f7f7f7;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h2>Eliminar Veículo</h2>
+<form action="/eliminarVeiculo" method="get" onsubmit="return confirm('Queres mesmo eliminar, olha aiiii?');">
+    <label>ID do Veículo para eliminar:</label>
+    <input type="number" name="id" required />
+    <button type="submit">Eliminar Veículo</button>
+</form>
+
+
+
+<a href="/Visualizarveiculos" class="back-button">⟵ Visualizar Veículos Introduzidos</a>
+</body>
+</html>

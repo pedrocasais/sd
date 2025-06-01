@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Veículo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        form {
+            width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center;">Editar Veículo</h2>
+
+<form th:action="@{/atualizarVeiculo}" th:object="${veiculo}" method="post">
+    <input type="hidden" th:field="*{ID}" />
+
+    <label>Marca:</label>
+    <input type="text" th:field="*{marca}" required />
+
+    <label>Modelo:</label>
+    <input type="text" th:field="*{modelo}" required />
+
+    <label>Categoria:</label>
+    <input type="text" th:field="*{categoria}" required />
+
+    <label>Ano:</label>
+    <input type="text" th:field="*{ano}" required />
+
+    <label>Cor:</label>
+    <input type="text" th:field="*{cor}" required />
+
+    <label>Preço:</label>
+    <input type="number" th:field="*{preco}" min="0" required />
+
+    <button type="submit">Atualizar Veículo</button>
+</form>
+
+<a th:href="@{/Visualizarveiculos}">← Voltar à Lista</a>
+
+</body>
+</html>

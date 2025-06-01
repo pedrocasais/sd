@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${veiculo.marca + ' ' + veiculo.modelo}">Detalhes do Veículo</title>
+    <link rel="stylesheet" th:href="@{/css/detalheVeiculo.css}">
+    <script th:src="@{/js/background.js}" defer></script>
+</head>
+<body>
+<canvas></canvas>
+
+<div class="logo">
+    <a href="/USER">
+        <img src="/images/autoUBI.png" alt="Logo">
+    </a>
+</div>
+
+<div class="auth-buttons">
+    <a class="btn-login" href="/perfil">
+        <i class="bi bi-person-fill"></i>
+    </a>
+</div>
+
+<div class="detalhes-container">
+    <div class="imagem">
+        <img th:src="@{'/veiculos/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}">
+    </div>
+    <div class="info">
+        <h1 th:text="${veiculo.marca + ' ' + veiculo.modelo}"></h1>
+        <p><strong>Ano:</strong> <span th:text="${veiculo.ano}"></span></p>
+        <p><strong>Categoria:</strong> <span th:text="${veiculo.categoria}"></span></p>
+        <p><strong>Cor:</strong> <span th:text="${veiculo.cor}"></span></p>
+        <p><strong>Preço:</strong> <span th:text="${veiculo.preco + ' €'}"></span></p>
+    </div>
+
+    <form th:action="@{'/comprar/' + ${veiculo.ID}}" method="get">
+        <button type="submit" class="comprar-btn">Comprar</button>
+    </form>
+</div>
+</body>
+</html>

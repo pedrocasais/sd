@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #000;
+    background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.13), transparent),
+    radial-gradient(circle at 20% 80%, rgba(41, 196, 255, 0.13), transparent);
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+}
+
+.logo img {
+    max-width: 200px;
+    height: auto;
+}
+
+.auth-buttons {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+}
+
+.btn-login{
+    width: 45px;
+    height: 45px;
+    border-radius: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover{
+    cursor: pointer;
+}
+
+.btn-login i {
+    font-size: 30px;
+}
+.menu {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.menu i {
+    font-size: 28px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.menu.active i {
+    color: #fff;
+}
+
+.menu.active i:before {
+    content: "\f659";
+}
+
+
+.menu-off {
+    background-color: rgb(34, 37, 49);
+    height: 100vh;
+    width: 100%;
+    max-width: 300px;
+    position: fixed;
+    top: 0;
+    left: -300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: 0.3s ease;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.menu-off.active {
+    left: 0;
+}
+
+.menu-off ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.menu-off li {
+    margin: 20px 0;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+}
+
+.menu-off.active li {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.menu-off li:nth-child(1) { transition-delay: 0.1s; }
+.menu-off li:nth-child(2) { transition-delay: 0.2s; }
+.menu-off li:nth-child(3) { transition-delay: 0.3s; }
+.menu-off li:nth-child(4) { transition-delay: 0.4s; }
+.menu-off li:nth-child(5) { transition-delay: 0.5s; }
+.menu-off li:nth-child(6) { transition-delay: 0.6s; }
+.menu-off li:nth-child(7) { transition-delay: 0.7s; }
+.menu-off li:nth-child(8) { transition-delay: 0.8s; }
+.menu-off li:nth-child(9) { transition-delay: 0.9s; }
+.menu-off li:nth-child(10) { transition-delay: 1s; }
+
+.menu-off a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 500;
+    display: block;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.menu-off a:hover {
+    color: #f0f0f0;
+    transform: translateX(10px);
+}
+.search-bar{
+    width: 100%;
+    min-height: 20vh;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-form{
+    width: 100%;
+    max-width: 600px;
+    border: 10px;
+    border-radius: 10px;
+    background-color: #333333;
+    display: flex;
+    align-items: center;
+    padding: 25px 6px;
+}
+
+.search-form input{
+    background: transparent;
+    flex: 1;
+    border: 0;
+    margin-right: auto;
+    color: white;
+    outline: none;
+    padding-left: 30px;
+    font-size: 15px;
+}
+
+.search-form a{
+    margin-left: auto;
+    color: white;
+    cursor: pointer;
+    padding-right: 30px;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.carousel {
+    width: 80%;
+    margin: 0 auto;
+    overflow-x: auto;
+    display: flex;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 20px 0;
+    -ms-overflow-style: none;  /* IE e Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari e Opera */
+}
+
+.carousel article {
+    min-width: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    scroll-snap-align: start;
+}
+
+.carousel article:hover {
+    transform: translateY(-10px);
+}
+
+.carousel article img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.carousel article h2 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.carousel article p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.carousel article a {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    transition: background 0.3s ease;
+}
+
+.carousel article a:hover {
+    background: #555;
+}
+
+.carousel-container {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.nav-prev {
+    left: -50px;
+}
+
+.nav-next {
+    right: -50px;
+}

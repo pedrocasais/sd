@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: #000;
+    background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.13), transparent),
+    radial-gradient(circle at 20% 80%, rgba(41, 196, 255, 0.13), transparent);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+.logo img {
+    width: 150px;
+    height: auto;
+}
+
+.perfil-container {
+    background-color: #1e1e1e;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 40px;
+}
+
+.perfil-container h1,
+.perfil-container h2 {
+    text-align: center;
+}
+
+.perfil-container p {
+    font-size: 15px;
+    background-color: #2a2a2a;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.perfil-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.perfil-container input[type="password"] {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.perfil-container button {
+    background-color: #2e2e2e;
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.perfil-container button:hover {
+    background-color: #4e4e4e;
+}
+
+.logout-btn {
+    background-color: #ff4444;
+}
+
+.logout-btn:hover {
+    background-color: #cc0000;
+}
