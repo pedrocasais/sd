@@ -25,16 +25,21 @@ import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
 import com.example.vehiclesstore.repository.VendasRepository;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import com.example.vehiclesstore.model.Veiculos;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import java.util.Random;
+import java.util.Optional;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -78,7 +83,20 @@ public class MainController {
         SessionController.SessionController(s);
 
         System.out.println(s);
-        model.addAttribute("ListDeps", vehicleRepository.findAll());
+        //model.addAttribute("ListDeps", vehicleRepository.findAll());
+        Random r = new Random();
+        int n = (int)vehicleRepository.count();
+        System.out.println("sdas _> "+n);
+        List<Veiculos> listaVeiculos = new ArrayList<>();
+
+        for(int i = 0; i < 8; i++) {
+            Veiculos veiculo = vehicleRepository.findByID(r.nextInt(n));
+            if (veiculo != null) {
+                listaVeiculos.add(veiculo);
+            }
+        }
+
+        model.addAttribute("veiculos", listaVeiculos);
         //loginRepository.deleteAll();
         //userRepository.deleteAll();
         return "main";
@@ -102,10 +120,47 @@ public class MainController {
 
     // POST para enviar do forms para a Base de Dados
     @PostMapping("/admColocarVeiculo")
-    public String salvarVeiculo(@ModelAttribute Veiculos veiculo) {
-        vehicleRepository.save(veiculo);
-        return "redirect:/admColocarVeiculo?success";
+    public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
+    ,@RequestParam("image") MultipartFile imageFile) {
+        Veiculos veiculo = new Veiculos();
+        veiculo.setMarca(marca);
+        veiculo.setModelo(modelo);
+        veiculo.setCategoria(categoria);
+        veiculo.setAno(ano);
+        veiculo.setCor(cor);
+        veiculo.setPreco(preco);
+        veiculo.setEstado("venda");
+        try {
+            if (!imageFile.isEmpty()) {
+                assert veiculo != null;
+                veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
+            }
+            vehicleRepository.save(veiculo);
+            return "redirect:/admColocarVeiculo?success";
+        } catch (Exception e) {
+            return "redirect:/admColocarVeiculo?error";
+        }
+
+
     }
+
+
+    @PostMapping("/addImg")
+    public String addImage( @RequestParam("image") MultipartFile imageFile) {
+        try {
+            Veiculos veiculo = vehicleRepository.findById(3).orElse(null);
+
+            if (!imageFile.isEmpty()) {
+                assert veiculo != null;
+                veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
+            }
+            vehicleRepository.save(veiculo);
+            return "redirect:/addImg?success";
+        } catch (Exception e) {
+            return "redirect:/addImg?error";
+        }
+    }
+
 
     @GetMapping("/eliminarVeiculo")
     public String eliminar(@RequestParam Integer id) {
@@ -114,10 +169,21 @@ public class MainController {
     }
 
     @GetMapping("/Visualizarveiculos")
-    public String listarVeiculos(@RequestParam(required = false) String marca,
-                                 @RequestParam(required = false) String ano,
-                                 @RequestParam(required = false) Integer precoMax,
-                                 Model model) {
+    public String mostrarVeiculos(Model model) {
+        List<Veiculos> veiculos = vehicleRepository.findAll();
+
+        model.addAttribute("veiculos", veiculos);
+        model.addAttribute("marcaSelecionada", "");
+        model.addAttribute("anoSelecionado", "");
+        model.addAttribute("marcas", vehicleRepository.listarMarcas());
+        model.addAttribute("anos", vehicleRepository.listarAnos());
+        model.addAttribute("precoMax", 2000000);
+
+        return "Visualizarveiculos";
+    }
+
+    @PostMapping("/Visualizarveiculos")
+    public String listarVeiculos(@RequestParam(required = false) String marca, @RequestParam(required = false) String ano, @RequestParam(required = false) Integer precoMax, Model model) {
 
         List<Veiculos> veiculos;
 
@@ -143,12 +209,52 @@ public class MainController {
         model.addAttribute("marcaSelecionada", marca);
         model.addAttribute("anoSelecionado", ano);
         model.addAttribute("marcas", vehicleRepository.listarMarcas());
-        model.addAttribute("anos",  vehicleRepository.listarAnos());
+        model.addAttribute("anos", vehicleRepository.listarAnos());
         model.addAttribute("precoMax", precoMax != null ? precoMax : 2000000);
 
         return "Visualizarveiculos";
     }
 
+    @GetMapping("/modificar")
+    public String modificar(){
+        return "modificar";
+    }
+
+    @GetMapping("/eliminar")
+    public String eliminar(){
+        return "eliminar";
+    }
+
+    @GetMapping("/modificarVeiculo")
+    public String editarVeiculo(@RequestParam("id") Integer id, Model model) {
+        Optional<Veiculos> veiculo = vehicleRepository.findById(id);
+        if (veiculo.isPresent()) {
+            model.addAttribute("veiculo", veiculo.get());
+            return "modificarVeiculo";
+        } else {
+            return "redirect:/Visualizarveiculos";
+        }
+    }
+
+    @PostMapping("/atualizarVeiculo")
+    public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
+    ) {
+        Optional<Veiculos> optionalVeiculo = vehicleRepository.findById(ID);
+
+        if (optionalVeiculo.isPresent()) {
+            Veiculos veiculo = optionalVeiculo.get();
+            veiculo.setMarca(marca);
+            veiculo.setModelo(modelo);
+            veiculo.setCategoria(categoria);
+            veiculo.setAno(ano);
+            veiculo.setCor(cor);
+            veiculo.setPreco(preco);
+
+            vehicleRepository.save(veiculo);
+        }
+
+        return "redirect:/Visualizarveiculos";
+    }
 
     // DIOGO VEICULOS
 
@@ -173,7 +279,7 @@ public class MainController {
         Users user = new Users();
         user.setEmail(email);
         user.setPassword(hashPassword.encode(password));
-        user.setRole("user");
+        user.setRole("use");
         user.setNome(nome);
         user.setMorada(morada);
         user.setNumTelemovel(tel);
@@ -226,7 +332,7 @@ public class MainController {
 
     @GetMapping("/USER")
     public String user() {
-        return "user";
+        return "USER";
     }
 
     @GetMapping("/perfil")
@@ -442,9 +548,33 @@ public class MainController {
         return "sobre";
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/ADMIN")
     public String admin() {
         return "admin";
+    }
+
+    @GetMapping("/image")
+    public String image() {
+        return "image";
+    }
+    @GetMapping("/addImg")
+    public String mostrarFormularioImagem() {
+        return "image";
+    }
+
+    @GetMapping("/estatisticas")
+    public String stats() {
+        return "estatisticas";
+    }
+
+    @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
+    @ResponseBody
+    public byte[] mostrarImagem(@PathVariable int id) throws Exception {
+        Veiculos veiculo = vehicleRepository.findById(id).orElse(null);
+        if (veiculo != null && veiculo.getImage() != null) {
+            return veiculo.getImage().getBytes(1, (int) veiculo.getImage().length());
+        }
+        return new byte[0];
     }
 
 }

@@ -18,10 +18,8 @@ public class Veiculos {
     private int preco;
     private String estado = "venda";
 
-
     @Lob
     private Blob image;
-
 
     public Blob getImage() {
         return image;
