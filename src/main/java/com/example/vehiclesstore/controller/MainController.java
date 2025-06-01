@@ -109,7 +109,7 @@ public class MainController {
     // POST para enviar do forms para a Base de Dados
     @PostMapping("/admColocarVeiculo")
     public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
-    ) {
+    ,@RequestParam("image") MultipartFile imageFile) {
         Veiculos veiculo = new Veiculos();
         veiculo.setMarca(marca);
         veiculo.setModelo(modelo);
@@ -117,11 +117,38 @@ public class MainController {
         veiculo.setAno(ano);
         veiculo.setCor(cor);
         veiculo.setPreco(preco);
+        veiculo.setEstado("venda");
+        try {
+            if (!imageFile.isEmpty()) {
+                assert veiculo != null;
+                veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
+            }
+            vehicleRepository.save(veiculo);
+            return "redirect:/admColocarVeiculo?success";
+        } catch (Exception e) {
+            return "redirect:/admColocarVeiculo?error";
+        }
 
-        vehicleRepository.save(veiculo);
 
-        return "redirect:/admColocarVeiculo?success";
     }
+
+
+    @PostMapping("/addImg")
+    public String addImage( @RequestParam("image") MultipartFile imageFile) {
+        try {
+            Veiculos veiculo = vehicleRepository.findById(3).orElse(null);
+
+            if (!imageFile.isEmpty()) {
+                assert veiculo != null;
+                veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
+            }
+            vehicleRepository.save(veiculo);
+            return "redirect:/addImg?success";
+        } catch (Exception e) {
+            return "redirect:/addImg?error";
+        }
+    }
+
 
     @GetMapping("/eliminarVeiculo")
     public String eliminar(@RequestParam Integer id) {
@@ -176,6 +203,16 @@ public class MainController {
         return "Visualizarveiculos";
     }
 
+    @GetMapping("/modificar")
+    public String modificar(){
+        return "modificar";
+    }
+
+    @GetMapping("/eliminar")
+    public String eliminar(){
+        return "eliminar";
+    }
+
     @GetMapping("/modificarVeiculo")
     public String editarVeiculo(@RequestParam("id") Integer id, Model model) {
         Optional<Veiculos> veiculo = vehicleRepository.findById(id);
@@ -206,10 +243,6 @@ public class MainController {
 
         return "redirect:/Visualizarveiculos";
     }
-
-
-
-
 
     // DIOGO VEICULOS
 
@@ -332,7 +365,7 @@ public class MainController {
     }
 
 
-    @GetMapping("/admin")
+    @GetMapping("/ADMIN")
     public String admin() {
         return "admin";
     }
@@ -344,23 +377,17 @@ public class MainController {
     }
     @GetMapping("/addImg")
     public String mostrarFormularioImagem() {
-        return "image"; // Nome do ficheiro HTML do formulário (image.html)
+        return "image";
     }
-    @PostMapping("/addImg")
-    public String addImage( @RequestParam("image") MultipartFile imageFile) {
-            try {
-                Veiculos veiculo = vehicleRepository.findById(3).orElse(null);
 
-                if (!imageFile.isEmpty()) {
-                    assert veiculo != null;
-                    veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
-                }
-                vehicleRepository.save(veiculo);
-                return "redirect:/addImg?success";
-            } catch (Exception e) {
-                return "redirect:/addImg?error";
-            }
+    @GetMapping("/estatisticas")
+    public String stats() {
+        return "estatisticas";
     }
+
+
+
+
 
     @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
     @ResponseBody

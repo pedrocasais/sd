@@ -16,6 +16,7 @@ public class Veiculos {
     private String ano;
     private String cor;
     private int preco;
+    private String estado;
 
 
     @Lob
@@ -28,6 +29,14 @@ public class Veiculos {
 
     public void setImage(Blob image) {
         this.image = image;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public int getID() {
