@@ -23,7 +23,14 @@
 
 <div class="detalhes-container">
     <div class="imagem">
-        <img th:src="@{'/veiculos/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}">
+        <img th:if="${veiculo.image != null}"
+             th:src="@{/veiculos/imagem/{id}(id=${veiculo.ID})}"
+             alt="Imagem do veículo" />
+
+        <img th:unless="${veiculo.image != null}"
+             src="/images/autoUBI.png"
+             alt="Imagem padrão do veículo" />
+
     </div>
     <div class="info">
         <h1 th:text="${veiculo.marca + ' ' + veiculo.modelo}"></h1>

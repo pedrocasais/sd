@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
     <script th:src="@{/js/background.js}" defer></script>
 </head>
 <body>
-
-<canvas></canvas>
 
 <div class="logo">
     <a href="/USER">
@@ -48,6 +46,23 @@
         </a>
     </form>
 </div>
+
+<div class="carousel-container">
+    <div class="carousel">
+        <article th:each="veiculo : ${veiculos}">
+            <img th:src="${veiculo.image != null} ? @{/veiculo/imagem/{id}(id=${veiculo.ID})} : @{/images/autoUBI.png}"
+                 th:alt="${veiculo.modelo}" />
+
+            <h2 th:text="${veiculo.marca}">Marca</h2>
+            <p th:text="${veiculo.modelo}">Detalhes</p>
+            <a th:href="@{/veiculo/{id}(id=${veiculo.ID})}">Ver mais</a>
+        </article>
+    </div>
+    <div class="carousel-nav nav-prev"><i class="bi bi-chevron-left"></i></div>
+    <div class="carousel-nav nav-next"><i class="bi bi-chevron-right"></i></div>
+</div>
+
+<canvas></canvas>
 
 <script th:src="@{/js/script.js}"></script>
 </body>
