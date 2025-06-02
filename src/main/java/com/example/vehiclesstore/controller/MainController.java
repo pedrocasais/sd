@@ -1,5 +1,6 @@
 package com.example.vehiclesstore.controller;
 
+import com.example.vehiclesstore.model.Estatisticas;
 import com.example.vehiclesstore.model.Users;
 import com.example.vehiclesstore.model.Veiculos;
 import com.example.vehiclesstore.repository.UsersRepository;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Os produtos devem ser agrupados em categorias, de forma a ser disponibilizado um
@@ -232,6 +234,24 @@ public class MainController {
             return "redirect:/Visualizarveiculos";
         }
     }
+
+    @GetMapping("/estatisticas")
+    public String mostrarEstatisticas(Model model) {
+        ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
+
+        List<Estatisticas> top3Clientes = todosClientes.stream()
+                .limit(3)
+                .collect(Collectors.toList());
+
+        Long totalVendidos = vehicleRepository.countByEstado("vendido");
+
+        model.addAttribute("melhoresClientes", top3Clientes);
+        model.addAttribute("totalVendidos", totalVendidos);
+
+
+        return "estatisticas";
+    }
+
 
     @PostMapping("/atualizarVeiculo")
     public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
@@ -532,12 +552,6 @@ public class MainController {
 
         model.addAttribute("veiculo", veiculoOpt.get());
         return "compra";
-    }
-
-
-    @GetMapping("/estatisticas")
-    public String estatisticas() {
-        return "estatisticas";
     }
 
     @GetMapping("/faq")
