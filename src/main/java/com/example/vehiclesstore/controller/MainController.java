@@ -90,7 +90,6 @@ public class MainController {
     @PostMapping("/admColocarVeiculo")
     public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam double preco
             , @RequestParam("image") MultipartFile imageFile) {
-
         return AdminService.AdminService(marca, modelo, categoria, ano, cor, preco, imageFile, vehicleRepository);
     }
 
@@ -145,13 +144,38 @@ public class MainController {
     // Does not change
     @GetMapping("/estatisticas")
     public String mostrarEstatisticas(Model model, HttpSession s) {
+        Object user = s.getAttribute("email");
+        Users users = userRepository.findByEmail(user.toString());
+
+        if (users != null) {
+            if (users.getRole().equals("ADMIN")) {
+                model.addAttribute("isAdmin", true);
+            }
+        }
+
         ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
+
+        if (todosClientes.isEmpty()) {
+            model.addAttribute("melhoresClientes", new ArrayList<Estatisticas>());
+            model.addAttribute("totalVendidos", 0L);
+            model.addAttribute("mostrarTabelaClientes", false);
+            return "estatisticas";
+        }
 
         List<Estatisticas> top3Clientes = todosClientes.stream()
                 .limit(3)
                 .collect(Collectors.toList());
 
-        Long totalVendidos = vehicleRepository.countByEstado("vendido");
+        Long totalVendidos = vendasRepository.count();
+
+        /*List<VendasMensal> totais = vendasRepository.findTotalVendasPorMes();
+
+        for (VendasMensal i : totais) {
+            System.out.println("Mês: " + i.getMes() + ", Total: " + i.getTotal());
+        }
+
+         */
+
 
         model.addAttribute("melhoresClientes", top3Clientes);
         model.addAttribute("totalVendidos", totalVendidos);
@@ -174,7 +198,7 @@ public class MainController {
                              @RequestParam String localidade, HttpSession s) {
 
 
-        return Registo.registo(email, apelido, codPostal,localidade, password, password2, nome, tel, morada, s, userRepository, hashPassword);
+        return Registo.registo(email, apelido, codPostal, localidade, password, password2, nome, tel, morada, s, userRepository, hashPassword);
 
     }
 
@@ -192,7 +216,9 @@ public class MainController {
 
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
+
         return ProfileServices.Perfil(model, session, userRepository, vendasRepository);
+
     }
 
     @GetMapping("/logout")
@@ -203,13 +229,19 @@ public class MainController {
 
     // Does not change
     @GetMapping("/logo")
-    public String logo(HttpSession s){
+    public String logo(HttpSession s) {
         Object user = s.getAttribute("email");
-
-        if (user.toString().isEmpty() ){
+        if (user.toString().isEmpty()) {
             return "redirect:/";
         }
-        return "redirect:/USER";
+        Users users = userRepository.findByEmail(user.toString());
+        System.out.println("role .> ," + users.getRole().toString());
+        if (users.getRole().equals("ADMIN")) {
+            return "redirect:/ADMIN";
+
+        } else {
+            return "redirect:/USER";
+        }
     }
 
 
@@ -221,8 +253,8 @@ public class MainController {
 
         Object email = session.getAttribute("email");
 
-        if (email == null || !novaPassword.equals(confirmarPassword)) {
-            System.out.println("Erro: Email ausente ou passwords não coincidem");
+        if (email == null) {
+            System.out.println("Erro: Email ausente");
             return "redirect:/perfil?error";
         }
 
@@ -232,7 +264,9 @@ public class MainController {
             System.out.println("Erro: Utilizador não encontrado");
             return "redirect:/perfil?error";
         }
-
+        if (!novaPassword.equals(confirmarPassword)) {
+            return "redirect:/perfil?error";
+        }
         String hashed = hashPassword.encode(novaPassword);
         user.setPassword(hashed);
         userRepository.save(user);
@@ -339,5 +373,11 @@ public class MainController {
         }
         return new byte[0];
     }
-*/
+    */
+
+    @GetMapping("/recibo")
+    public String genPDF() {
+        return "";
+    }
+
 }

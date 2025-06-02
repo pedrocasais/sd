@@ -23,7 +23,7 @@ public class AdminService {
                 veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
             }
             vehicleRepository.save(veiculo);
-            return "redirect:/admColocarVeiculo?success";
+            return "redirect:/ADMIN";
         } catch (Exception e) {
             return "redirect:/admColocarVeiculo?error";
         }
