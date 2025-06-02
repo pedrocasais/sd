@@ -27,6 +27,10 @@ public class AdminService {
         } catch (Exception e) {
             return "redirect:/admColocarVeiculo?error";
         }
+    }
 
+    public static String delVehicle(Integer id, VeiculosRepository vehicleRepository){
+        vehicleRepository.deleteById(id);
+        return "redirect:/Visualizarveiculos";
     }
 }
