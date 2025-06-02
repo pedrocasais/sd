@@ -184,7 +184,6 @@ public class MainController {
 
     @GetMapping("/estatisticas")
     public String mostrarEstatisticas(Model model, HttpSession s) {
-        Object user = s.getAttribute("email");
         ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
 
         List<Estatisticas> top3Clientes = todosClientes.stream()

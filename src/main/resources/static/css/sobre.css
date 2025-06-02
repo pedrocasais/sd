@@ -86,3 +86,17 @@ canvas {
     margin-top: 100px;
     text-align: center;
 }
+
+.about-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: rgba(255, 255, 255, 0.1); /* semi-transparente */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 18px;
+    line-height: 1.6;
+    backdrop-filter: blur(10px); /* efeito de vidro */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
