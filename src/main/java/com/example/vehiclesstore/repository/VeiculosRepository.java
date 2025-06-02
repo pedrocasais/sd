@@ -24,13 +24,13 @@ public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
     @Query("SELECT DISTINCT v.ano FROM Veiculos v ORDER BY v.ano DESC")
     List<String> listarAnos();
 
-    List<Veiculos> findByPrecoLessThanEqual(Integer preco);
+    List<Veiculos> findByPrecoLessThanEqual(Double preco);
 
-    List<Veiculos> findByMarcaAndPrecoLessThanEqual(String marca, Integer preco);
+    List<Veiculos> findByMarcaAndPrecoLessThanEqual(String marca, Double preco);
 
-    List<Veiculos> findByAnoAndPrecoLessThanEqual(String ano, Integer preco);
+    List<Veiculos> findByAnoAndPrecoLessThanEqual(String ano, Double preco);
 
-    List<Veiculos> findByMarcaAndAnoAndPrecoLessThanEqual(String marca, String ano, Integer preco);
+    List<Veiculos> findByMarcaAndAnoAndPrecoLessThanEqual(String marca, String ano, Double preco);
 
     List<Veiculos> findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(String marca, String modelo);
 

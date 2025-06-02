@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.vehiclesstore.model.Vendas;
 import com.example.vehiclesstore.repository.VendasRepository;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 
 import java.sql.Blob;
 import java.time.LocalDateTime;
@@ -59,6 +61,8 @@ public class MainController {
 
     @Autowired
     private PageableHandlerMethodArgumentResolverSupport pageableHandlerMethodArgumentResolverSupport;
+    //@Autowired
+    //private FilterRegistrationBean<ResourceUrlEncodingFilter> resourceUrlEncodingFilter;
 
     @GetMapping(path = "/")
     public String getAllDeps(Model model, HttpSession s) {
@@ -90,7 +94,7 @@ public class MainController {
         return AdminService.AdminService(marca, modelo, categoria, ano, cor, preco, imageFile, vehicleRepository);
     }
 
-
+/*
     @PostMapping("/addImg")
     public String addImage(@RequestParam("image") MultipartFile imageFile) {
         try {
@@ -106,59 +110,21 @@ public class MainController {
             return "redirect:/addImg?error";
         }
     }
-
+*/
 
     @GetMapping("/eliminarVeiculo")
     public String eliminar(@RequestParam Integer id) {
-        vehicleRepository.deleteById(id);
-        return "redirect:/Visualizarveiculos";
+        return AdminService.delVehicle(id, vehicleRepository);
     }
 
     @GetMapping("/Visualizarveiculos")
     public String mostrarVeiculos(Model model) {
-        List<Veiculos> veiculos = vehicleRepository.findAll();
-
-        model.addAttribute("veiculos", veiculos);
-        model.addAttribute("marcaSelecionada", "");
-        model.addAttribute("anoSelecionado", "");
-        model.addAttribute("marcas", vehicleRepository.listarMarcas());
-        model.addAttribute("anos", vehicleRepository.listarAnos());
-        model.addAttribute("precoMax", 2000000);
-
-        return "Visualizarveiculos";
+        return VehiclesService.VehiclesService(vehicleRepository, model);
     }
 
     @PostMapping("/Visualizarveiculos")
-    public String listarVeiculos(@RequestParam(required = false) String marca, @RequestParam(required = false) String ano, @RequestParam(required = false) Integer precoMax, Model model) {
-
-        List<Veiculos> veiculos;
-
-        if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty() && precoMax != null) {
-            veiculos = vehicleRepository.findByMarcaAndAnoAndPrecoLessThanEqual(marca, ano, precoMax);
-        } else if (marca != null && !marca.isEmpty() && ano != null && !ano.isEmpty()) {
-            veiculos = vehicleRepository.findByMarcaAndAno(marca, ano);
-        } else if (marca != null && !marca.isEmpty() && precoMax != null) {
-            veiculos = vehicleRepository.findByMarcaAndPrecoLessThanEqual(marca, precoMax);
-        } else if (ano != null && !ano.isEmpty() && precoMax != null) {
-            veiculos = vehicleRepository.findByAnoAndPrecoLessThanEqual(ano, precoMax);
-        } else if (marca != null && !marca.isEmpty()) {
-            veiculos = vehicleRepository.findByMarca(marca);
-        } else if (ano != null && !ano.isEmpty()) {
-            veiculos = vehicleRepository.findByAno(ano);
-        } else if (precoMax != null) {
-            veiculos = vehicleRepository.findByPrecoLessThanEqual(precoMax);
-        } else {
-            veiculos = vehicleRepository.findAll();
-        }
-
-        model.addAttribute("veiculos", veiculos);
-        model.addAttribute("marcaSelecionada", marca);
-        model.addAttribute("anoSelecionado", ano);
-        model.addAttribute("marcas", vehicleRepository.listarMarcas());
-        model.addAttribute("anos", vehicleRepository.listarAnos());
-        model.addAttribute("precoMax", precoMax != null ? precoMax : 2000000);
-
-        return "Visualizarveiculos";
+    public String listarVeiculos(@RequestParam(required = false) String marca, @RequestParam(required = false) String ano, @RequestParam(required = false) double precoMax, Model model) {
+        return VehiclesService.listVehiclesFilter(marca, ano, precoMax, model, vehicleRepository);
     }
 
     @GetMapping("/modificar")
@@ -173,15 +139,10 @@ public class MainController {
 
     @GetMapping("/modificarVeiculo")
     public String editarVeiculo(@RequestParam("id") Integer id, Model model) {
-        Optional<Veiculos> veiculo = vehicleRepository.findById(id);
-        if (veiculo.isPresent()) {
-            model.addAttribute("veiculo", veiculo.get());
-            return "modificarVeiculo";
-        } else {
-            return "redirect:/Visualizarveiculos";
-        }
+        return VehiclesService.changeVehicle(id, model, vehicleRepository);
     }
 
+    // Does not change
     @GetMapping("/estatisticas")
     public String mostrarEstatisticas(Model model, HttpSession s) {
         ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
@@ -201,22 +162,8 @@ public class MainController {
 
 
     @PostMapping("/atualizarVeiculo")
-    public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco) {
-        Optional<Veiculos> optionalVeiculo = vehicleRepository.findById(ID);
-
-        if (optionalVeiculo.isPresent()) {
-            Veiculos veiculo = optionalVeiculo.get();
-            veiculo.setMarca(marca);
-            veiculo.setModelo(modelo);
-            veiculo.setCategoria(categoria);
-            veiculo.setAno(ano);
-            veiculo.setCor(cor);
-            veiculo.setPreco(preco);
-
-            vehicleRepository.save(veiculo);
-        }
-
-        return "redirect:/Visualizarveiculos";
+    public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam Double preco) {
+        return VehiclesService.updateVehicles(ID, marca, modelo,categoria, ano, cor, preco, vehicleRepository);
     }
 
     // DIOGO VEICULOS
@@ -245,22 +192,7 @@ public class MainController {
 
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
-        Object userEmail = session.getAttribute("email"); // ou use SessionController
-
-
-        if (userEmail == null) {
-            return "redirect:/login"; // Proteção extra
-        }
-        System.out.println("user -> "+userEmail.toString());
-        Users user = userRepository.findByEmail(userEmail.toString());
-        model.addAttribute("user", user);
-
-        List<Vendas> compras = vendasRepository.findByUser(user);
-        model.addAttribute("compras", compras);
-
-        Users user2 = userRepository.findByEmail(userEmail.toString());
-        model.addAttribute("user", user2);
-        return "perfil";
+        return ProfileServices.Perfil(model, session, userRepository, vendasRepository);
     }
 
     @GetMapping("/logout")
@@ -269,6 +201,7 @@ public class MainController {
         return "redirect:/"; // volta à página de login
     }
 
+    // Does not change
     @GetMapping("/logo")
     public String logo(HttpSession s){
         Object user = s.getAttribute("email");
@@ -279,6 +212,8 @@ public class MainController {
         return "redirect:/USER";
     }
 
+
+    // Does not change
     @PostMapping("/alterar-password")
     public String alterarPassword(@RequestParam String novaPassword,
                                   @RequestParam String confirmarPassword,
@@ -308,85 +243,22 @@ public class MainController {
 
     @GetMapping("/vendas")
     public String mostrarFormularioVenda(Model model) {
-        model.addAttribute("veiculos", vehicleRepository.findAll());
-        model.addAttribute("users", userRepository.findAll());
-        return "vendas";
+        return VendasService.showForms(model, vehicleRepository, userRepository);
     }
 
     @PostMapping("/confirmar-compra/{id}")
-    public String confirmarCompra(@PathVariable int id,
-                                  @RequestParam String refPagamento,
-                                  @RequestParam int nif,
-                                  HttpSession session) {
+    public String confirmarCompra(@PathVariable int id, @RequestParam int nif, HttpSession session) {
 
-        Object email = session.getAttribute("email");
-        if (email == null) {
-            return "redirect:/login";
-        }
-
-        Users userOpt = userRepository.findByEmail(email.toString());
-        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
-
-        if (userOpt.equals("") || veiculoOpt.isEmpty()) {
-            return "redirect:/veiculos?erro";
-        }
-
-        // Criar venda
-        Vendas venda = new Vendas();
-        venda.setUser(userOpt); // Extrai o valor do Optional
-        venda.setVeiculo(veiculoOpt.get());
-        venda.setDataVenda(LocalDateTime.now());
-        venda.setPrecoVenda(veiculoOpt.get().getPreco());
-        venda.setNif(nif);
-        venda.setRefPagamento(refPagamento);
-
-        // Atualiza estado do veículo e salva
-        Veiculos veiculo = veiculoOpt.get();
-        veiculo.setEstado("vendido");
-        vehicleRepository.save(veiculo);
-
-        // Guarda a venda
-        vendasRepository.save(venda);
-
-        return "redirect:/veiculos?sucesso";
+        return VendasService.confirmSell(id, nif, session, userRepository, vehicleRepository,vendasRepository);
     }
 
     @GetMapping("/veiculos")
-    public String veiculos(@RequestParam(required = false) String marca,
-                           @RequestParam(required = false) String termo,
-                           @RequestParam(required = false) String ano,
-                           @RequestParam(required = false) Integer precoMax,
-                           Model model) {
+    public String veiculos(@RequestParam(required = false) String marca, @RequestParam(required = false) String termo, @RequestParam(required = false) String ano,
+                           @RequestParam(required = false) Double precoMax, Model model) {
 
-        List<Veiculos> veiculos;
-
-        if (termo != null && !termo.isBlank()) {
-            veiculos = vehicleRepository.findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(termo, termo);
-        } else if (marca != null && !marca.isBlank() && ano != null && !ano.isBlank() && precoMax != null) {
-            veiculos = vehicleRepository.findByMarcaAndAnoAndPrecoLessThanEqual(marca, ano, precoMax);
-        } else if (marca != null && !marca.isBlank() && ano != null && !ano.isBlank()) {
-            veiculos = vehicleRepository.findByMarcaAndAno(marca, ano);
-        } else if (marca != null && !marca.isBlank() && precoMax != null) {
-            veiculos = vehicleRepository.findByMarcaAndPrecoLessThanEqual(marca, precoMax);
-        } else if (ano != null && !ano.isBlank() && precoMax != null) {
-            veiculos = vehicleRepository.findByAnoAndPrecoLessThanEqual(ano, precoMax);
-        } else if (marca != null && !marca.isBlank()) {
-            veiculos = vehicleRepository.findByMarca(marca);
-        } else if (ano != null && !ano.isBlank()) {
-            veiculos = vehicleRepository.findByAno(ano);
-        } else if (precoMax != null) {
-            veiculos = vehicleRepository.findByPrecoLessThanEqual(precoMax);
-        } else {
-            veiculos = vehicleRepository.findByEstadoNot("vendido");
-        }
-
-        model.addAttribute("veiculos", veiculos);
-        model.addAttribute("marcas", vehicleRepository.listarMarcas());
-        model.addAttribute("anos", vehicleRepository.listarAnos());
-
-        return "veiculos";
+        return VehiclesService.listVehicles(termo, marca, ano, precoMax, model, vehicleRepository);
     }
-
+/*
     @GetMapping("/veiculos/imagem/{id}")
     @ResponseBody
     public ResponseEntity<byte[]> obterImagem(@PathVariable int id) {
@@ -408,16 +280,10 @@ public class MainController {
 
         return ResponseEntity.notFound().build();
     }
-
+*/
     @GetMapping("/veiculo/{id}")
     public String mostrarDetalhesVeiculo(@PathVariable int id, Model model) {
-        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
-        if (veiculoOpt.isEmpty()) {
-            return "redirect:/veiculos?erro=naoencontrado";
-        }
-
-        model.addAttribute("veiculo", veiculoOpt.get());
-        return "detalheVeiculo";
+        return VehiclesService.vehicleDetails(model, vehicleRepository, id);
     }
 
     @GetMapping("/comprar/{id}")
@@ -463,6 +329,7 @@ public class MainController {
         return "image";
     }
 
+/*
     @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
     @ResponseBody
     public byte[] mostrarImagem(@PathVariable int id) throws Exception {
@@ -472,5 +339,5 @@ public class MainController {
         }
         return new byte[0];
     }
-
+*/
 }
