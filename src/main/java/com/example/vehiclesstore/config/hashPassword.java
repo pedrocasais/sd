@@ -1,4 +1,4 @@
-package com.example.vehiclesstore.services;
+package com.example.vehiclesstore.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

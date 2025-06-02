@@ -60,37 +60,9 @@ public class MainController {
     @Autowired
     private PageableHandlerMethodArgumentResolverSupport pageableHandlerMethodArgumentResolverSupport;
 
-    @Autowired
-    private Registo registo;
-
     @GetMapping(path = "/")
     public String getAllDeps(Model model, HttpSession s) {
-
-        /**
-         * verifica se tem "sessão",
-         *      se sim -> mantem
-         *      se não -> cria uma nova sessão
-         */
-        SessionController.SessionController(s);
-
-        System.out.println(s);
-        //model.addAttribute("ListDeps", vehicleRepository.findAll());
-        Random r = new Random();
-        int n = (int) vehicleRepository.count();
-        System.out.println("n of cars _> " + n);
-        List<Veiculos> listaVeiculos = new ArrayList<>();
-
-        for (int i = 0; i < 8; i++) {
-            Veiculos veiculo = vehicleRepository.findByID(r.nextInt(n));
-            if (veiculo != null) {
-                listaVeiculos.add(veiculo);
-            }
-        }
-
-        model.addAttribute("veiculos", listaVeiculos);
-        //loginRepository.deleteAll();
-        //userRepository.deleteAll();
-        return "main";
+        return Home.home(model, vehicleRepository);
     }
 
     @Autowired
@@ -112,28 +84,10 @@ public class MainController {
 
     // POST para enviar do forms para a Base de Dados
     @PostMapping("/admColocarVeiculo")
-    public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
+    public String salvarVeiculo(@RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam double preco
             , @RequestParam("image") MultipartFile imageFile) {
-        Veiculos veiculo = new Veiculos();
-        veiculo.setMarca(marca);
-        veiculo.setModelo(modelo);
-        veiculo.setCategoria(categoria);
-        veiculo.setAno(ano);
-        veiculo.setCor(cor);
-        veiculo.setPreco(preco);
-        veiculo.setEstado("venda");
-        try {
-            if (!imageFile.isEmpty()) {
-                assert veiculo != null;
-                veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
-            }
-            vehicleRepository.save(veiculo);
-            return "redirect:/admColocarVeiculo?success";
-        } catch (Exception e) {
-            return "redirect:/admColocarVeiculo?error";
-        }
 
-
+        return AdminService.AdminService(marca, modelo, categoria, ano, cor, preco, imageFile, vehicleRepository);
     }
 
 
@@ -248,8 +202,7 @@ public class MainController {
 
 
     @PostMapping("/atualizarVeiculo")
-    public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco
-    ) {
+    public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam int preco) {
         Optional<Veiculos> optionalVeiculo = vehicleRepository.findById(ID);
 
         if (optionalVeiculo.isPresent()) {
@@ -274,13 +227,6 @@ public class MainController {
                              @RequestParam String apelido, @RequestParam String codPostal, @RequestParam Long tel, @RequestParam String morada,
                              @RequestParam String localidade, HttpSession s) {
 
-        if (!(userRepository.findByEmail(email) == null)) {
-            return "redirect:/registar?error=email";
-        }
-
-        if (!password.equals(password2)) {
-            return "redirect:/registar?error=pass";
-        }
 
         return Registo.registo(email, apelido, codPostal,localidade, password, password2, nome, tel, morada, s, userRepository, hashPassword);
 

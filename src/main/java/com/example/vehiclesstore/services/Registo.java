@@ -11,10 +11,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class Registo {
 
-
+    /**
+     * função responsável por guardar o user na DB
+     */
     public static String registo(String email, String apelido, String localidade, String codPostal, String password, String password2, String nome, Long tel, String morada, HttpSession s, UsersRepository userRepository, BCryptPasswordEncoder hashPassword){
         System.out.println("email -> " + email.toString());
 
+        if (!(userRepository.findByEmail(email) == null)) {
+            return "redirect:/registar?error=email";
+        }
+
+        // ALTERAR
+        // password doesn't match error no page
+        if (!password.equals(password2)) {
+            return "redirect:/registar?error=pass";
+        }
 
         Users user = new Users();
         user.setEmail(email);

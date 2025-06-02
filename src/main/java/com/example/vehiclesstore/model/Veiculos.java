@@ -15,7 +15,7 @@ public class Veiculos {
     private String modelo;
     private String ano;
     private String cor;
-    private int preco;
+    private double preco;
     private String estado = "venda";
 
     @Lob
@@ -37,11 +37,11 @@ public class Veiculos {
         this.ID = ID;
     }
 
-    public int getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(int preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
 
