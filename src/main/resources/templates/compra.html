@@ -24,7 +24,10 @@
 <div class="compra-container">
     <h1>Finalizar Compra</h1>
     <div class="veiculo-box">
-        <img th:src="@{'/veiculos/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}" />
+
+        <img th:if="${veiculo.image != null}" th:src="@{'/veiculos/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}" />
+        <img th:if="${veiculo.image == null}" src="/images/autoUBI.png" alt="Imagem por defeito" />
+
         <div class="veiculo-info">
             <h2 th:text="${veiculo.marca + ' ' + veiculo.modelo}"></h2>
             <p><strong>Categoria:</strong> <span th:text="${veiculo.categoria}"></span></p>
