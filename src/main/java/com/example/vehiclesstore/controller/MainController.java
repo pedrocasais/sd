@@ -375,10 +375,20 @@ public class MainController {
         return "perfil";
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // encerra a sessão
-        return "redirect:"; // volta à página de login
+        return "redirect:/"; // volta à página de login
+    }
+
+    @GetMapping("/logo")
+    public String logo(HttpSession s){
+        Object user = s.getAttribute("email");
+
+        if (user.toString().isEmpty() ){
+            return "redirect:/";
+        }
+        return "redirect:/USER";
     }
 
     @PostMapping("/alterar-password")
@@ -542,7 +552,8 @@ public class MainController {
 
 
     @GetMapping("/estatisticas")
-    public String estatisticas() {
+    public String estatisticas(HttpSession s) {
+        Object user = s.getAttribute("email");
         return "estatisticas";
     }
 
