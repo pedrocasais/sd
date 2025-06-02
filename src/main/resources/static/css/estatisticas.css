@@ -86,3 +86,18 @@ canvas {
     margin-top: 100px;
     text-align: center;
 }
+
+table{
+    width: 80%;
+    max-width: 800px;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+}
