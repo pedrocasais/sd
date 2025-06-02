@@ -27,9 +27,28 @@
 
 <div class="content">
     <h1 style="text-align: center; color: white; margin-top: 100px;">Estatísticas de Vendas</h1>
+
+    <div style="color: white; margin-top: 40px; text-align: center;">
+        <h2>Total de Veículos Vendidos: <span th:text="${totalVendidos}">0</span></h2>
+
+        <h2 style="margin-top: 40px;">Melhor Cliente</h2>
+        <table style="margin: 0 auto; color: white; border: 1px solid white;">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Total de Compras</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cliente : ${melhoresClientes}">
+                <td th:text="${cliente.nome}">Nome Cliente</td>
+                <td th:text="${cliente.totalCompras}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>
-
-
