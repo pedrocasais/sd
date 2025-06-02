@@ -94,14 +94,14 @@
 
 <h1>Lista de Veículos</h1>
 
-<form method="get" action="/Visualizarveiculos">
+<form method="post" action="/Visualizarveiculos">
     <div>
         <label for="marca">Marca:</label>
         <select name="marca" id="marca">
             <option value="">-- Todas --</option>
-            <th:block th:each="m : ${marcas}">
-                <option th:value="${m}" th:text="${m}"
-                        th:selected="${m == marcaSelecionada}"></option>
+            <th:block th:each="marca : ${marcas}">
+                <option th:value="${marca}" th:text="${marca}"
+                        th:selected="${marca == marcaSelecionada}"></option>
             </th:block>
         </select>
     </div>
@@ -110,9 +110,9 @@
         <label for="ano">Ano:</label>
         <select name="ano" id="ano">
             <option value="">-- Todos --</option>
-            <th:block th:each="a : ${anos}">
-                <option th:value="${a}" th:text="${a}"
-                        th:selected="${a == anoSelecionado}"></option>
+            <th:block th:each="ano : ${anos}">
+                <option th:value="${ano}" th:text="${no}"
+                        th:selected="${ano == anoSelecionado}"></option>
             </th:block>
         </select>
     </div>
@@ -142,18 +142,18 @@
     </thead>
     <tbody>
     <tr th:each="veiculo : ${veiculos}">
-        <td th:text="${veiculo.ID}">1</td>
-        <td th:text="${veiculo.marca}">Ferrari</td>
-        <td th:text="${veiculo.modelo}">LaFerrari</td>
-        <td th:text="${veiculo.ano}">2015</td>
-        <td th:text="${veiculo.cor}">Vermelho</td>
-        <td th:text="${veiculo.categoria}">Esportivo</td>
-        <td th:text="${#numbers.formatDecimal(veiculo.preco, 0, 'COMMA', 2, 'POINT')}">150000</td>
+        <td th:text="${veiculo.ID}"></td>
+        <td th:text="${veiculo.marca}"></td>
+        <td th:text="${veiculo.modelo}"></td>
+        <td th:text="${veiculo.ano}"></td>
+        <td th:text="${veiculo.cor}"></td>
+        <td th:text="${veiculo.categoria}"></td>
+        <td th:text="${#numbers.formatDecimal(veiculo.preco, 0, 'COMMA', 2, 'POINT')}"></td>
     </tr>
     </tbody>
 </table>
 
-<a th:href="@{/admColocarVeiculo}" class="back-button">Voltar à Página de Adição de Veículos</a>
+<a th:href="@{/ADMIN}" class="back-button">Voltar à Página Menu do Administrador</a>
 
 </body>
 </html>

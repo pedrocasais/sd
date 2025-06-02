@@ -16,6 +16,5 @@ public class SessionController {
         }else{
             System.out.println(session);
         }
-
     }
 }

@@ -8,7 +8,6 @@
     <script th:src="@{/js/background.js}" defer></script>
 </head>
 <body>
-
 <canvas></canvas>
 
 <div class="logo">
@@ -16,9 +15,8 @@
         <img src="/images/autoUBI.png" alt="Logo">
     </a>
 </div>
-
-<form action="/addUser" method="post">
-
+<form  method="post" th:action="@{/registo}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <h1>Registar</h1>
 
     <div class="registar-email">
@@ -55,7 +53,7 @@
         </div>
         <div class="registar-movel">
             <i class="bi bi-telephone-fill"></i>
-            <input type="text" name="tel" placeholder="telemovel" required/>
+            <input type="number" name="tel" placeholder="telemovel" required/>
         </div>
     </div>
 

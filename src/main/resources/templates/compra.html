@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Finalizar Compra</title>
+    <link rel="stylesheet" th:href="@{/css/compra.css}">
+    <script th:src="@{/js/background.js}" defer></script>
+</head>
+<body>
+<canvas></canvas>
+
+<div class="logo">
+    <a href="/USER">
+        <img src="/images/autoUBI.png" alt="Logo">
+    </a>
+</div>
+
+<div class="auth-buttons">
+    <a class="btn-login" href="/perfil">
+        <i class="bi bi-person-fill"></i>
+    </a>
+</div>
+
+<div class="compra-container">
+    <h1>Finalizar Compra</h1>
+    <div class="veiculo-box">
+        <img th:src="@{'/veiculos/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}" />
+        <div class="veiculo-info">
+            <h2 th:text="${veiculo.marca + ' ' + veiculo.modelo}"></h2>
+            <p><strong>Categoria:</strong> <span th:text="${veiculo.categoria}"></span></p>
+            <p><strong>Ano:</strong> <span th:text="${veiculo.ano}"></span></p>
+            <p><strong>Cor:</strong> <span th:text="${veiculo.cor}"></span></p>
+            <p><strong>Preço:</strong> <span th:text="${veiculo.preco + ' €'}"></span></p>
+        </div>
+    </div>
+
+    <form th:action="@{'/confirmar-compra/' + ${veiculo.ID}}" method="post">
+        <input type="text" name="refPagamento" placeholder="Referência de Pagamento" required />
+        <input type="number" name="nif" placeholder="NIF" required />
+        <button type="submit">Confirmar Compra</button>
+    </form>
+</div>
+
+</body>
+</html>

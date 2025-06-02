@@ -7,6 +7,7 @@ import java.util.List;
 
 
 public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
+    Veiculos findByID(int id);
 
 
     List<Veiculos> findByMarcaAndAno(String marca, String ano);
@@ -30,6 +31,10 @@ public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
     List<Veiculos> findByAnoAndPrecoLessThanEqual(String ano, Integer preco);
 
     List<Veiculos> findByMarcaAndAnoAndPrecoLessThanEqual(String marca, String ano, Integer preco);
+
+    List<Veiculos> findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(String marca, String modelo);
+
+    List<Veiculos> findByEstadoNot(String estado);
 
 }
 
