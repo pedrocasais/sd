@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Sobre nós</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+
     <link rel="stylesheet" th:href="@{/css/sobre.css}">
-    <script th:src="@{/js/background.js}" defer></script>
+
 </head>
 <body>
 
-<canvas></canvas>
 
 <div class="logo">
     <a  th:href="@{/logo}"><img src="/images/autoUBI.png" alt="Logo"></a>
 </div>
 
 <div class="auth-buttons">
-    <a class="btn-login" href="/perfil"><i class="bi bi-person-fill"></i></a>
+    <a class="btn-login" onclick="window.location.href='/login'"><i class="bi bi-person-fill"></i></a>
 </div>
 
 <div class="menu">
@@ -23,6 +24,16 @@
     <span></span>
     <span></span>
     <span></span>
+</div>
+
+<div class="menu-off">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/veiculos">Veículos</a></li>
+        <li><a href="/estatisticas">Estatísticas</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/sobre">Sobre nós</a></li>
+    </ul>
 </div>
 
 <div class="content">
@@ -40,7 +51,9 @@
 
     </p>
 </div>
+<canvas></canvas>
 
+<script th:src="@{/js/background.js}"></script>
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>

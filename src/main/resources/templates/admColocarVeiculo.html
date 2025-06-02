@@ -71,7 +71,7 @@
 <body>
 
 <h2>Adicionar Novo Veículo</h2>
-<form action="/admColocarVeiculo" method="post"  enctype="multipart/form-data">
+<form th:action="@{/admColocarVeiculo}" method="post" enctype="multipart/form-data">
     <label>Marca:</label>
     <input type="text" name="marca" required />
 
