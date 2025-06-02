@@ -230,7 +230,6 @@ public class MainController {
 
     @GetMapping("/estatisticas")
     public String mostrarEstatisticas(Model model, HttpSession s) {
-        Object user = s.getAttribute("email");
         ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
 
         List<Estatisticas> top3Clientes = todosClientes.stream()
@@ -270,6 +269,7 @@ public class MainController {
     // DIOGO VEICULOS
 
     @PostMapping("/registo")
+
     public String registUser(@RequestParam String email, @RequestParam String password, @RequestParam String password2, @RequestParam String nome,
                              @RequestParam String apelido, @RequestParam String codPostal, @RequestParam Long tel, @RequestParam String morada,
                              @RequestParam String localidade, HttpSession s) {
@@ -277,7 +277,7 @@ public class MainController {
         if (!(userRepository.findByEmail(email) == null)) {
             return "redirect:/registar?error=email";
         }
-
+        System.out.println("email -> " + email.toString());
         if (!password.equals(password2)) {
             return "redirect:/registar?error=pass";
         }
@@ -327,10 +327,10 @@ public class MainController {
     @GetMapping("/logo")
     public String logo(HttpSession s){
         Object user = s.getAttribute("email");
-
-        if (user.toString().isEmpty() ){
+        if (user == null){
             return "redirect:/";
         }
+
         return "redirect:/USER";
     }
 
