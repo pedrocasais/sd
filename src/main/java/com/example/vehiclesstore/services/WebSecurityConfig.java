@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -17,7 +18,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -29,10 +30,16 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**");
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/login","/checkUser", "/registar", "/registo", "/estatisticas").permitAll()
+                        .requestMatchers("/", "/home", "/login","/checkUser", "/registar", "/registo","/estatisticas","/faq","/sobre","/veiculos").permitAll()
                         .requestMatchers("/USER").hasRole("USER")
                         .requestMatchers("/ADMIN").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -57,7 +64,7 @@ public class WebSecurityConfig {
                         //.defaultSuccessUrl("/USER", true)
                         .permitAll())
 
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout -> logout .logoutSuccessUrl("/logout"));
         return http.build();
     }
 

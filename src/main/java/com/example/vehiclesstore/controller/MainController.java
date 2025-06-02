@@ -236,7 +236,8 @@ public class MainController {
     }
 
     @GetMapping("/estatisticas")
-    public String mostrarEstatisticas(Model model) {
+    public String mostrarEstatisticas(Model model, HttpSession s) {
+        Object user = s.getAttribute("email");
         ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
 
         List<Estatisticas> top3Clientes = todosClientes.stream()
@@ -395,10 +396,20 @@ public class MainController {
         return "perfil";
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // encerra a sessão
-        return "redirect:"; // volta à página de login
+        return "redirect:/"; // volta à página de login
+    }
+
+    @GetMapping("/logo")
+    public String logo(HttpSession s){
+        Object user = s.getAttribute("email");
+
+        if (user.toString().isEmpty() ){
+            return "redirect:/";
+        }
+        return "redirect:/USER";
     }
 
     @PostMapping("/alterar-password")
