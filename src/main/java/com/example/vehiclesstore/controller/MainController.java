@@ -1,22 +1,16 @@
 package com.example.vehiclesstore.controller;
 
-import com.example.vehiclesstore.model.Estatisticas;
-import com.example.vehiclesstore.model.Users;
-import com.example.vehiclesstore.model.Veiculos;
+import com.example.vehiclesstore.model.*;
+import com.example.vehiclesstore.services.*;
 import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
-import com.example.vehiclesstore.services.SessionController;
+
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolverSupport;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.stereotype.Controller;
@@ -24,11 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.vehiclesstore.model.Vendas;
 import com.example.vehiclesstore.repository.VendasRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Blob;
 import java.time.LocalDateTime;
@@ -69,6 +59,9 @@ public class MainController {
 
     @Autowired
     private PageableHandlerMethodArgumentResolverSupport pageableHandlerMethodArgumentResolverSupport;
+
+    @Autowired
+    private Registo registo;
 
     @GetMapping(path = "/")
     public String getAllDeps(Model model, HttpSession s) {
@@ -276,18 +269,12 @@ public class MainController {
     // DIOGO VEICULOS
 
     @PostMapping("/registo")
-    public String registUser(@RequestParam String email,
-                             @RequestParam String password,
-                             @RequestParam String password2,
-                             @RequestParam String nome,
-                             @RequestParam Long tel,
-                             @RequestParam String morada,
-                             HttpSession s) {
 
+    public String registUser(@RequestParam String email, @RequestParam String password, @RequestParam String password2, @RequestParam String nome,
+                             @RequestParam String apelido, @RequestParam String codPostal, @RequestParam Long tel, @RequestParam String morada,
+                             @RequestParam String localidade, HttpSession s) {
 
-
-        if (userRepository.findByEmail(email) != null) {
-
+        if (!(userRepository.findByEmail(email) == null)) {
             return "redirect:/registar?error=email";
         }
         System.out.println("email -> " + email.toString());
@@ -295,21 +282,7 @@ public class MainController {
             return "redirect:/registar?error=pass";
         }
 
-        Users user = new Users();
-        user.setEmail(email);
-        user.setPassword(hashPassword.encode(password));
-        user.setRole("USER");
-
-        user.setNome(nome);
-        user.setMorada(morada);
-        user.setNumTelemovel(tel);
-
-        userRepository.save(user);
-
-        // ✅ Inicia sessão automaticamente
-        s.setAttribute("email", user.getEmail());
-
-        return "redirect:/USER"; // ou "/perfil" se preferir
+        return Registo.registo(email, apelido, codPostal,localidade, password, password2, nome, tel, morada, s, userRepository, hashPassword);
 
     }
 
@@ -319,56 +292,6 @@ public class MainController {
         return "login";
     }
 
-
-
-
-
-    /*
-    @PostMapping("/checkUser")
-    public String loginUser(@RequestParam String username,
-                            @RequestParam String password,
-                            Model model,
-                            HttpSession s) {
-
-
-        System.out.println("aqui ");
-
-        SessionController.SessionController(s);
-        Optional<Users> user = Optional.ofNullable(userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
-
-        if (user.isEmpty() || !hashPassword.matches(password, user.get().getPassword())) {
-            model.addAttribute("error", "Email ou password incorretos.");
-            return "login";
-        }
-        System.out.println("dsad _> " + user.get().getRole());
-
-
-        s.setAttribute("email", user.get().getEmail());
-
-
-        // Redirecionamento após login
-        String destino = (String) s.getAttribute("redirectAfterLogin");
-        if (destino != null) {
-            s.removeAttribute("redirectAfterLogin");
-            return "redirect:" + destino;
-        }
-
-
-        String role = user.orElseThrow().getRole();
-        if ("ADMIN".equals(role)) {
-            return "redirect:/ADMIN";
-        } else if ("USER".equals(role)) {
-            return "redirect:/USER";
-        } else {
-            return "redirect:/login?error";
-        }
-
-
-    }
-
-
-     */
 
     @GetMapping("/USER")
     public String user() {

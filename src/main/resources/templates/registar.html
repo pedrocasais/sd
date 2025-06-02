@@ -21,7 +21,7 @@
 
     <div class="registar-email">
         <i class="bi bi-envelope-fill"></i>
-        <input type="email" name="email" placeholder="email" required/>
+        <input type="email" name="email" placeholder="email" required />
     </div>
 
     <div class="form-row">
@@ -31,7 +31,7 @@
         </div>
         <div class="registar-nome2">
             <i class="bi bi-person-fill"></i>
-            <input type="text" name="nome2" placeholder="apelido" required/>
+            <input type="text" name="apelido" placeholder="apelido" required/>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
         </div>
         <div class="registar-cod">
             <i class="bi bi-house-fill"></i>
-            <input type="text" name="codPostal" placeholder="codPostal" required/>
+            <input type="text" name="codPostal" placeholder="codPostal" required pattern="^\d{4}-\d{3}$"/>
         </div>
     </div>
 
@@ -54,6 +54,7 @@
         <div class="registar-movel">
             <i class="bi bi-telephone-fill"></i>
             <input id="tel" type="tel" name="tel" placeholder="telemovel" pattern="[0-9]{9}" required/>
+
         </div>
     </div>
 

@@ -3,31 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>FAQ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/faq.css}">
     <script th:src="@{/js/background.js}" defer></script>
 </head>
 <body>
 
-<canvas></canvas>
+    <canvas></canvas>
+
 
 <div class="logo">
     <a  th:href="@{/logo}"><img src="/images/autoUBI.png" alt="Logo"></a>
 </div>
 
-<div class="auth-buttons">
-    <a class="btn-login" href="/perfil"><i class="bi bi-person-fill"></i></a>
-</div>
 
-<div class="menu">
-    <i class="bi bi-list"></i>
-    <span></span>
-    <span></span>
-    <span></span>
-</div>
+    <div class="auth-buttons">
+        <a class="btn-login" href="/perfil"><i class="bi bi-person-fill"></i></a>
+    </div>
 
-<div class="content">
-    <h1 style="text-align: center; color: white; margin-top: 100px;">Perguntas Frequentes (FAQ)</h1>
-</div>
-<script th:src="@{/js/script.js}"></script>
+    <div class="menu">
+        <i class="bi bi-list"></i>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="menu-off">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/veiculos">Veículos</a></li>
+            <li><a href="/estatisticas">Estatísticas</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/sobre">Sobre nós</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1 style="text-align: center; color: white; margin-top: 100px;">Perguntas Frequentes (FAQ)</h1>
+    </div>
+    <section>
+        <details>
+            <summary>Os carros são novos ou usados?</summary>
+            <p>
+                Vendemos carros novos e totalmente personalizados para cada cliente em concordância com as opções disponibilizadas no nosso site.
+            </p>
+        </details>
+
+        <details>
+            <summary>Os carros têm garantia?</summary>
+            <p>
+                Sim, oferecemos uma garantia de 12 meses.
+            </p>
+        </details>
+
+        <details>
+            <summary>Quais os métodos de pagamento disponíveis?</summary>
+            <p>
+                De momento aceitamos apenas pagamentos por referência multibanco.
+            </p>
+        </details>
+
+        <details>
+            <summary>Posso comprar o carro a prestações?</summary>
+            <p>
+                Sim, temos opções de financiamento, entre em contacto para mais detalhes.
+            </p>
+        </details>
+
+        <details>
+            <summary>Posso levantar o carro pessoalmente?</summary>
+            <p>
+                Sim, mediante agendamento prévio.
+            </p>
+        </details>
+
+
+    </section>
+    <script th:src="@{/js/script.js}"></script>
+    <script th:src="@{/js/background.js}"></script>
+    <script th:src="@{/js/images.js}"></script>
 </body>
 </html>

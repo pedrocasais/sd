@@ -14,8 +14,21 @@
     <a th:href="@{/logo}"><img src="/images/autoUBI.png" alt="Logo"></a>
 </div>
 
-<div class="auth-buttons">
-    <a class="btn-login" href="/perfil"><i class="bi bi-person-fill"></i></a>
+<div class="menu">
+    <i class="bi bi-list"></i>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div class="menu-off">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/veiculos">Veículos</a></li>
+        <li><a href="/estatisticas">Estatísticas</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/sobre">Sobre nós</a></li>
+    </ul>
 </div>
 
 <div class="menu">
@@ -50,5 +63,6 @@
 </div>
 
 <script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/background.js}"></script>
 </body>
 </html>
