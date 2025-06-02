@@ -1,5 +1,6 @@
 package com.example.vehiclesstore.services;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,11 +45,14 @@ public class WebSecurityConfig {
                                     .map(a -> a.getAuthority())
                                     .collect(Collectors.toSet());
 
+                            HttpSession session = request.getSession();
+                            session.setAttribute("email", authentication.getName());
                             if (roles.contains("ROLE_ADMIN")) {
                                 response.sendRedirect("/ADMIN");
                             } else {
                                 response.sendRedirect("/USER");
                             }
+
                         })
                         //.defaultSuccessUrl("/USER", true)
                         .permitAll())

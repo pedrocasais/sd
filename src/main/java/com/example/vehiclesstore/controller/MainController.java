@@ -266,7 +266,7 @@ public class MainController {
 
         System.out.println("email -> " + email.toString());
 
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email).equals("null")) {
 
             return "redirect:/registar?error=email";
         }
@@ -359,12 +359,19 @@ public class MainController {
     public String perfil(HttpSession session, Model model) {
         Object userEmail = session.getAttribute("email"); // ou use SessionController
 
+
         if (userEmail == null) {
             return "redirect:/login"; // Proteção extra
         }
-
-        Users user = userRepository.findByEmail(userEmail.toString()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        System.out.println("user -> "+userEmail.toString());
+        Users user = userRepository.findByEmail(userEmail.toString());
         model.addAttribute("user", user);
+
+        List<Vendas> compras = vendasRepository.findByUser(user);
+        model.addAttribute("compras", compras);
+
+        Users user2 = userRepository.findByEmail(userEmail.toString());
+        model.addAttribute("user", user2);
         return "perfil";
     }
 
@@ -386,9 +393,8 @@ public class MainController {
             return "redirect:/perfil?error";
         }
 
-        Optional<Users> userOpt = userRepository.findByEmail(email.toString());
+        Users user = userRepository.findByEmail(email.toString());
 
-        Users user = userOpt.get();
         if (user == null) {
             System.out.println("Erro: Utilizador não encontrado");
             return "redirect:/perfil?error";
@@ -420,16 +426,16 @@ public class MainController {
             return "redirect:/login";
         }
 
-        Optional<Users> userOpt = userRepository.findByEmail(email.toString());
+        Users userOpt = userRepository.findByEmail(email.toString());
         Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
 
-        if (userOpt.isEmpty() || veiculoOpt.isEmpty()) {
+        if (userOpt.equals("") || veiculoOpt.isEmpty()) {
             return "redirect:/veiculos?erro";
         }
 
         // Criar venda
         Vendas venda = new Vendas();
-        venda.setUser(userOpt.get()); // Extrai o valor do Optional
+        venda.setUser(userOpt); // Extrai o valor do Optional
         venda.setVeiculo(veiculoOpt.get());
         venda.setDataVenda(LocalDateTime.now());
         venda.setPrecoVenda(veiculoOpt.get().getPreco());
