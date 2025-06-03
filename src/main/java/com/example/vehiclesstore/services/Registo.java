@@ -44,9 +44,9 @@ public class Registo {
         userRepository.save(user);
 
         // Inicia sessão automaticamente
-        s.setAttribute("email", user.getEmail());
+        //s.setAttribute("email", user.getEmail());
 
-        return "redirect:/USER";
+        return "redirect:/login";
     }
 
 }
