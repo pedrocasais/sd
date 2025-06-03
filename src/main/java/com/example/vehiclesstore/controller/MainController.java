@@ -159,6 +159,7 @@ public class MainController {
             model.addAttribute("melhoresClientes", new ArrayList<Estatisticas>());
             model.addAttribute("totalVendidos", 0L);
             model.addAttribute("mostrarTabelaClientes", false);
+            model.addAttribute("mostrarTabelaVendas", false);
             return "estatisticas";
         }
 
@@ -168,18 +169,13 @@ public class MainController {
 
         Long totalVendidos = vendasRepository.count();
 
-        /*List<VendasMensal> totais = vendasRepository.findTotalVendasPorMes();
+        List<VendasMensal> totais = vendasRepository.findTotalVendasPorMes();
 
-        for (VendasMensal i : totais) {
-            System.out.println("Mês: " + i.getMes() + ", Total: " + i.getTotal());
-        }
-
-         */
-
-
+        model.addAttribute("vendasMensais", totais);
         model.addAttribute("melhoresClientes", top3Clientes);
         model.addAttribute("totalVendidos", totalVendidos);
-
+        model.addAttribute("mostrarTabelaClientes", !top3Clientes.isEmpty());
+        model.addAttribute("mostrarTabelaVendas", !totais.isEmpty());
 
         return "estatisticas";
     }
@@ -339,12 +335,28 @@ public class MainController {
     }
 
     @GetMapping("/faq")
-    public String faq() {
+    public String faq(HttpSession s, Model model){
+        Object user = s.getAttribute("email");
+        Users users = userRepository.findByEmail(user.toString());
+
+        if (users != null) {
+            if (users.getRole().equals("ADMIN")) {
+                model.addAttribute("isAdmin", true);
+            }
+        }
         return "faq";
     }
 
     @GetMapping("/sobre")
-    public String sobre() {
+    public String sobre(HttpSession s, Model model) {
+        Object user = s.getAttribute("email");
+        Users users = userRepository.findByEmail(user.toString());
+
+        if (users != null) {
+            if (users.getRole().equals("ADMIN")) {
+                model.addAttribute("isAdmin", true);
+            }
+        }
         return "sobre";
     }
 
@@ -363,7 +375,7 @@ public class MainController {
         return "image";
     }
 
-/*
+
     @GetMapping(value = "/veiculo/imagem/{id}", produces = "image/jpeg")
     @ResponseBody
     public byte[] mostrarImagem(@PathVariable int id) throws Exception {
@@ -373,11 +385,18 @@ public class MainController {
         }
         return new byte[0];
     }
-    */
+
 
     @GetMapping("/recibo")
     public String genPDF() {
         return "";
     }
 
+
+    @GetMapping("/veiculos/pesquisa")
+    public String getCar(@RequestParam String termo, Model model){
+        List<Veiculos> veiculos = vehicleRepository.findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(termo,termo);
+        model.addAttribute("veiculos", veiculos);
+        return "main";
+    }
 }

@@ -31,9 +31,16 @@
 
     <div class="menu-off">
         <ul>
-            <li><a href="/">Home</a></li>
+            <li><a href="/logo">Home</a></li>
             <li><a href="/veiculos">Veículos</a></li>
             <li><a href="/estatisticas">Estatísticas</a></li>
+
+            <li th:if="${isAdmin}"><a href="/Visualizarveiculos">Visualizar veículos</a></li>
+            <li th:if="${isAdmin}"><a href="/admColocarVeiculo">Adicionar carro</a></li>
+            <li th:if="${isAdmin}"><a href="/modificar">Modificar carro</a></li>
+            <li th:if="${isAdmin}"><a href="/eliminar">Eliminar carro</a></li>
+            <li th:if="${isAdmin}"><a href="/gerir">Gerir</a></li>
+
             <li><a href="/faq">FAQ</a></li>
             <li><a href="/sobre">Sobre nós</a></li>
         </ul>

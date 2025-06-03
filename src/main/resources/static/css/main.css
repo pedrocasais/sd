@@ -173,11 +173,15 @@ body {
     font-size: 15px;
 }
 
-.search-form a{
+.search-form button{
+    background: transparent;
     margin-left: auto;
     color: white;
     cursor: pointer;
     padding-right: 30px;
+    border: none;
+    outline: none;
+    font-size: 15px;
 }
 
 canvas {
