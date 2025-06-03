@@ -59,10 +59,6 @@ public class MainController {
     @Autowired
     private UsersRepository userRepository;
 
-    @Autowired
-    private PageableHandlerMethodArgumentResolverSupport pageableHandlerMethodArgumentResolverSupport;
-    //@Autowired
-    //private FilterRegistrationBean<ResourceUrlEncodingFilter> resourceUrlEncodingFilter;
 
     @GetMapping(path = "/")
     public String getAllDeps(Model model, HttpSession s) {
@@ -92,24 +88,6 @@ public class MainController {
             , @RequestParam("image") MultipartFile imageFile) {
         return AdminService.AdminService(marca, modelo, categoria, ano, cor, preco, imageFile, vehicleRepository);
     }
-
-/*
-    @PostMapping("/addImg")
-    public String addImage(@RequestParam("image") MultipartFile imageFile) {
-        try {
-            Veiculos veiculo = vehicleRepository.findById(3).orElse(null);
-
-            if (!imageFile.isEmpty()) {
-                assert veiculo != null;
-                veiculo.setImage(new javax.sql.rowset.serial.SerialBlob(imageFile.getBytes()));
-            }
-            vehicleRepository.save(veiculo);
-            return "redirect:/addImg?success";
-        } catch (Exception e) {
-            return "redirect:/addImg?error";
-        }
-    }
-*/
 
     @GetMapping("/eliminarVeiculo")
     public String eliminar(@RequestParam Integer id) {
@@ -144,40 +122,7 @@ public class MainController {
     // Does not change
     @GetMapping("/estatisticas")
     public String mostrarEstatisticas(Model model, HttpSession s) {
-        Object user = s.getAttribute("email");
-        Users users = userRepository.findByEmail(user.toString());
-
-        if (users != null) {
-            if (users.getRole().equals("ADMIN")) {
-                model.addAttribute("isAdmin", true);
-            }
-        }
-
-        ArrayList<Estatisticas> todosClientes = vendasRepository.findTopClientes();
-
-        if (todosClientes.isEmpty()) {
-            model.addAttribute("melhoresClientes", new ArrayList<Estatisticas>());
-            model.addAttribute("totalVendidos", 0L);
-            model.addAttribute("mostrarTabelaClientes", false);
-            model.addAttribute("mostrarTabelaVendas", false);
-            return "estatisticas";
-        }
-
-        List<Estatisticas> top3Clientes = todosClientes.stream()
-                .limit(3)
-                .collect(Collectors.toList());
-
-        Long totalVendidos = vendasRepository.count();
-
-        List<VendasMensal> totais = vendasRepository.findTotalVendasPorMes();
-
-        model.addAttribute("vendasMensais", totais);
-        model.addAttribute("melhoresClientes", top3Clientes);
-        model.addAttribute("totalVendidos", totalVendidos);
-        model.addAttribute("mostrarTabelaClientes", !top3Clientes.isEmpty());
-        model.addAttribute("mostrarTabelaVendas", !totais.isEmpty());
-
-        return "estatisticas";
+        return EstatisticasService.showStats(model, s, userRepository, vendasRepository);
     }
 
 
@@ -186,18 +131,14 @@ public class MainController {
         return VehiclesService.updateVehicles(ID, marca, modelo, categoria, ano, cor, preco, vehicleRepository);
     }
 
-    // DIOGO VEICULOS
-
     @PostMapping("/registo")
     public String registUser(@RequestParam String email, @RequestParam String password, @RequestParam String password2, @RequestParam String nome,
                              @RequestParam String apelido, @RequestParam String codPostal, @RequestParam Long tel, @RequestParam String morada,
                              @RequestParam String localidade, HttpSession s) {
 
-
         return Registo.registo(email, apelido, codPostal, localidade, password, password2, nome, tel, morada, s, userRepository, hashPassword);
 
     }
-
 
     @GetMapping("/login")
     public String login() {
@@ -226,18 +167,7 @@ public class MainController {
     // Does not change
     @GetMapping("/logo")
     public String logo(HttpSession s) {
-        Object user = s.getAttribute("email");
-        if (user.toString().isEmpty()) {
-            return "redirect:/";
-        }
-        Users users = userRepository.findByEmail(user.toString());
-        System.out.println("role .> ," + users.getRole().toString());
-        if (users.getRole().equals("ADMIN")) {
-            return "redirect:/ADMIN";
-
-        } else {
-            return "redirect:/USER";
-        }
+        return HomeService.logoAction(s, userRepository);
     }
 
 
@@ -246,29 +176,7 @@ public class MainController {
     public String alterarPassword(@RequestParam String novaPassword,
                                   @RequestParam String confirmarPassword,
                                   HttpSession session) {
-
-        Object email = session.getAttribute("email");
-
-        if (email == null) {
-            System.out.println("Erro: Email ausente");
-            return "redirect:/perfil?error";
-        }
-
-        Users user = userRepository.findByEmail(email.toString());
-
-        if (user == null) {
-            System.out.println("Erro: Utilizador não encontrado");
-            return "redirect:/perfil?error";
-        }
-        if (!novaPassword.equals(confirmarPassword)) {
-            return "redirect:/perfil?error";
-        }
-        String hashed = hashPassword.encode(novaPassword);
-        user.setPassword(hashed);
-        userRepository.save(user);
-
-        System.out.println("Nova password (hashed): " + hashed);
-        return "redirect:/perfil?success";
+        return ProfileServices.changePassword(session,userRepository ,novaPassword, confirmarPassword, hashPassword);
     }
 
     @GetMapping("/vendas")
@@ -289,13 +197,7 @@ public class MainController {
         return VehiclesService.listVehicles(termo, marca, ano, precoMax, model, vehicleRepository);
     }
 
-    /*
-        @GetMapping("/veiculos/imagem/{id}")
-        @ResponseBody
-        public ResponseEntity<byte[]> obterImagem(@PathVariable int id) {
-           return ;
-        }
-    */
+
     @GetMapping("/veiculo/{id}")
     public String mostrarDetalhesVeiculo(@PathVariable int id, Model model) {
         return VehiclesService.vehicleDetails(model, vehicleRepository, id);
@@ -303,46 +205,17 @@ public class MainController {
 
     @GetMapping("/comprar/{id}")
     public String comprar(@PathVariable int id, HttpSession session, Model model) {
-        Object email = session.getAttribute("email");
-
-        if (email == null) {
-            session.setAttribute("redirectAfterLogin", "/comprar/" + id);
-            return "redirect:/login";
-        }
-
-        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
-        if (veiculoOpt.isEmpty()) {
-            return "redirect:/veiculos";
-        }
-
-        model.addAttribute("veiculo", veiculoOpt.get());
-        return "compra";
+       return VendasService.confirmCompra(session, vehicleRepository, id, model);
     }
 
     @GetMapping("/faq")
     public String faq(HttpSession s, Model model) {
-        Object user = s.getAttribute("email");
-        Users users = userRepository.findByEmail(user.toString());
-
-        if (users != null) {
-            if (users.getRole().equals("ADMIN")) {
-                model.addAttribute("isAdmin", true);
-            }
-        }
-        return "faq";
+        return HomeService.faqDetails(s, userRepository, model);
     }
 
     @GetMapping("/sobre")
     public String sobre(HttpSession s, Model model) {
-        Object user = s.getAttribute("email");
-        Users users = userRepository.findByEmail(user.toString());
-
-        if (users != null) {
-            if (users.getRole().equals("ADMIN")) {
-                model.addAttribute("isAdmin", true);
-            }
-        }
-        return "sobre";
+        return HomeService.aboutUsDetails(s, userRepository, model);
     }
 
     @GetMapping("/ADMIN")
@@ -374,41 +247,7 @@ public class MainController {
 
     @GetMapping("/recibo-txt/{idVenda}")
     public ResponseEntity<byte[]> gerarReciboTxt(@PathVariable int idVenda) {
-        Optional<Vendas> vendaOpt = vendasRepository.findById(idVenda);
-        if (vendaOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Vendas venda = vendaOpt.get();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("========== Fatura da Compra ==========\n");
-        sb.append("AutoUBI - Sistema de Gestão de Veículos\n\n");
-
-        sb.append(">> Número da Venda:\n");
-        sb.append("ID Venda: ").append(venda.getIdVenda()).append("\n\n");
-
-        sb.append(">> Dados do Veículo:\n");
-        sb.append("Marca: ").append(venda.getVeiculo().getMarca()).append("\n");
-        sb.append("Modelo: ").append(venda.getVeiculo().getModelo()).append("\n");
-        sb.append("Ano: ").append(venda.getVeiculo().getAno()).append("\n");
-        sb.append("Categoria: ").append(venda.getVeiculo().getCategoria()).append("\n");
-        sb.append("Cor: ").append(venda.getVeiculo().getCor()).append("\n");
-        sb.append("Preço: ").append(venda.getPrecoVenda()).append(" €\n\n");
-
-        sb.append(">> Comprador:\n");
-        sb.append("Nome: ").append(venda.getUser().getNome()).append("\n");
-        sb.append("Email: ").append(venda.getUser().getEmail()).append("\n");
-        sb.append("NIF: ").append(venda.getNif()).append("\n");
-        sb.append("Referência: ").append(venda.getRefPagamento()).append("\n");
-        sb.append("Data: ").append(venda.getDataVenda()).append("\n");
-
-        byte[] conteudo = sb.toString().getBytes();
-
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=fatura_" + idVenda + ".txt")
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(conteudo);
+       return VendasService.faturaGenerator(vendasRepository, idVenda);
     }
 
 

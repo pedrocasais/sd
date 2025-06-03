@@ -1,7 +1,9 @@
 package com.example.vehiclesstore.services;
 
 import com.example.vehiclesstore.VehiclesStoreApplication;
+import com.example.vehiclesstore.model.Users;
 import com.example.vehiclesstore.model.Veiculos;
+import com.example.vehiclesstore.repository.UsersRepository;
 import com.example.vehiclesstore.repository.VeiculosRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +19,7 @@ import java.util.Random;
 public class HomeService {
 
     public static String home(Model model, VeiculosRepository vehicleRepository) {
-        /* int n = (int) vehicleRepository.count();
 
-        List<Veiculos> listaVeiculos = new ArrayList<>();
-        Random r = new Random();
-        System.out.println("n -> " + n);
-        if (n == 0) {
-            System.out.println("aqui ????");
-            return "main";
-        }
-        for (int i = 0; i < 8; i++) {
-            Veiculos veiculo = vehicleRepository.findByID(r.nextInt(n));
-            if (veiculo != null) {
-                listaVeiculos.add(veiculo);
-            }
-        }
-
-        model.addAttribute("veiculos", listaVeiculos);
-
-        return "main";
-
-       */
         List<Veiculos> todosVeiculos = vehicleRepository.findByEstadoNot("vendido");
 
         if (todosVeiculos.isEmpty()) {
@@ -58,5 +40,44 @@ public class HomeService {
         model.addAttribute("veiculos", listaVeiculos);
         return "main";
 
+    }
+
+    public static String logoAction(HttpSession s, UsersRepository userRepository){
+        Object user = s.getAttribute("email");
+        if (user.toString().isEmpty()) {
+            return "redirect:/";
+        }
+        Users users = userRepository.findByEmail(user.toString());
+        System.out.println("role .> ," + users.getRole().toString());
+        if (users.getRole().equals("ADMIN")) {
+            return "redirect:/ADMIN";
+
+        } else {
+            return "redirect:/USER";
+        }
+    }
+
+    public static String faqDetails(HttpSession s, UsersRepository userRepository, Model model){
+        Object user = s.getAttribute("email");
+        Users users = userRepository.findByEmail(user.toString());
+
+        if (users != null) {
+            if (users.getRole().equals("ADMIN")) {
+                model.addAttribute("isAdmin", true);
+            }
+        }
+        return "faq";
+    }
+
+    public static String aboutUsDetails(HttpSession s, UsersRepository userRepository, Model model){
+        Object user = s.getAttribute("email");
+        Users users = userRepository.findByEmail(user.toString());
+
+        if (users != null) {
+            if (users.getRole().equals("ADMIN")) {
+                model.addAttribute("isAdmin", true);
+            }
+        }
+        return "sobre";
     }
 }
