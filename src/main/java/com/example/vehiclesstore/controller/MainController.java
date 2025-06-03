@@ -66,7 +66,7 @@ public class MainController {
 
     @GetMapping(path = "/")
     public String getAllDeps(Model model, HttpSession s) {
-        return Home.home(model, vehicleRepository);
+        return HomeService.home(model, vehicleRepository);
     }
 
     @Autowired
@@ -296,23 +296,7 @@ public class MainController {
     @GetMapping("/veiculos/imagem/{id}")
     @ResponseBody
     public ResponseEntity<byte[]> obterImagem(@PathVariable int id) {
-        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
-
-        if (veiculoOpt.isPresent() && veiculoOpt.get().getImage() != null) {
-            try {
-                Blob imagemBlob = veiculoOpt.get().getImage();
-                byte[] imagemBytes = imagemBlob.getBytes(1, (int) imagemBlob.length());
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(imagemBytes);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return ResponseEntity.notFound().build();
+       return ;
     }
 */
     @GetMapping("/veiculo/{id}")

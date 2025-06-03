@@ -14,7 +14,7 @@ public class Vendas {
 
     private LocalDateTime dataVenda;
     private double precoVenda;
-    private String refPagamento;
+    private long refPagamento;
     private int nif;
 
     @ManyToOne
@@ -57,11 +57,11 @@ public class Vendas {
         this.idVenda = idVenda;
     }
 
-    public String getRefPagamento() {
+    public long getRefPagamento() {
         return refPagamento;
     }
 
-    public void setRefPagamento(String refPagamento) {
+    public void setRefPagamento(Long refPagamento) {
         this.refPagamento = refPagamento;
     }
 

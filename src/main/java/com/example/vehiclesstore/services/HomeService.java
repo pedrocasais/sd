@@ -4,15 +4,17 @@ import com.example.vehiclesstore.VehiclesStoreApplication;
 import com.example.vehiclesstore.model.Veiculos;
 import com.example.vehiclesstore.repository.VeiculosRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class Home {
+public class HomeService {
 
     public static String home(Model model, VeiculosRepository vehicleRepository){
         int n = (int) vehicleRepository.count();

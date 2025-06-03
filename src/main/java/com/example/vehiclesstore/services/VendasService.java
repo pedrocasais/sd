@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class VendasService {
@@ -36,6 +37,8 @@ public class VendasService {
         venda.setDataVenda(LocalDateTime.now());
         venda.setPrecoVenda(veiculoOpt.get().getPreco());
         venda.setNif(nif);
+        long ref = (long) (Math.random() * 99999999 + 100000000);
+        venda.setRefPagamento(ref);
 
         // Atualiza estado do veículo e salva
         Veiculos veiculo = veiculoOpt.get();

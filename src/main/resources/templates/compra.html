@@ -38,7 +38,6 @@
     </div>
 
     <form th:action="@{'/confirmar-compra/' + ${veiculo.ID}}" method="post">
-        <input type="text" name="refPagamento" placeholder="Referência de Pagamento" required />
         <input type="number" name="nif" placeholder="NIF" required />
         <button type="submit">Confirmar Compra</button>
     </form>
