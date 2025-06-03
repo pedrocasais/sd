@@ -39,6 +39,8 @@ public interface VeiculosRepository extends CrudRepository<Veiculos, Integer>{
     // CONTADOR DE CARROS VENDIDOS
     //Long countByEstado(String estado);
 
+
+
 }
 
 

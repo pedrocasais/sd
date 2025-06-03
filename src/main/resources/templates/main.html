@@ -37,11 +37,11 @@
 </div>
 
 <div class="search-bar">
-    <form class="search-form">
-        <input type="text" placeholder="pesquisa">
-        <a type="submit">
+    <form class="search-form" th:action="@{/veiculos/pesquisa}" method="GET">
+        <input type="text" name="termo" placeholder="pesquisa">
+        <button type="submit">
             <i class="bi bi-search"></i>
-        </a>
+        </button>
     </form>
 </div>
 
