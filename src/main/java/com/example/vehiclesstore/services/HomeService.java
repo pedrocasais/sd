@@ -38,25 +38,25 @@ public class HomeService {
         return "main";
 
        */
-            List<Veiculos> todosVeiculos = vehicleRepository.findAll();
+        List<Veiculos> todosVeiculos = vehicleRepository.findByEstadoNot("vendido");
 
-    if(todosVeiculos.isEmpty()){
+        if (todosVeiculos.isEmpty()) {
+            return "main";
+        }
+
+        List<Veiculos> listaVeiculos = new ArrayList<>();
+        Random r = new Random();
+
+        // Limita ao número de veículos disponíveis ou 8, o que for menor
+        int totalParaMostrar = Math.min(todosVeiculos.size(), 8);
+
+        for (int i = 0; i < totalParaMostrar; i++) {
+            int indiceAleatorio = r.nextInt(todosVeiculos.size());
+            listaVeiculos.add(todosVeiculos.remove(indiceAleatorio));
+        }
+
+        model.addAttribute("veiculos", listaVeiculos);
         return "main";
-    }
-
-    List<Veiculos> listaVeiculos = new ArrayList<>();
-    Random r = new Random();
-
-    // Limita ao número de veículos disponíveis ou 8, o que for menor
-    int totalParaMostrar = Math.min(todosVeiculos.size(), 8);
-
-    for (int i = 0; i < totalParaMostrar; i++) {
-        int indiceAleatorio = r.nextInt(todosVeiculos.size());
-        listaVeiculos.add(todosVeiculos.remove(indiceAleatorio));
-    }
-
-    model.addAttribute("veiculos", listaVeiculos);
-    return "main";
 
     }
 }

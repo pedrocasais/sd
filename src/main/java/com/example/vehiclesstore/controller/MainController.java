@@ -183,7 +183,7 @@ public class MainController {
 
     @PostMapping("/atualizarVeiculo")
     public String atualizarVeiculo(@RequestParam int ID, @RequestParam String marca, @RequestParam String modelo, @RequestParam String categoria, @RequestParam String ano, @RequestParam String cor, @RequestParam Double preco) {
-        return VehiclesService.updateVehicles(ID, marca, modelo,categoria, ano, cor, preco, vehicleRepository);
+        return VehiclesService.updateVehicles(ID, marca, modelo, categoria, ano, cor, preco, vehicleRepository);
     }
 
     // DIOGO VEICULOS
@@ -279,7 +279,7 @@ public class MainController {
     @PostMapping("/confirmar-compra/{id}")
     public String confirmarCompra(@PathVariable int id, @RequestParam int nif, HttpSession session) {
 
-        return VendasService.confirmSell(id, nif, session, userRepository, vehicleRepository,vendasRepository);
+        return VendasService.confirmSell(id, nif, session, userRepository, vehicleRepository, vendasRepository);
     }
 
     @GetMapping("/veiculos")
@@ -288,13 +288,14 @@ public class MainController {
 
         return VehiclesService.listVehicles(termo, marca, ano, precoMax, model, vehicleRepository);
     }
-/*
-    @GetMapping("/veiculos/imagem/{id}")
-    @ResponseBody
-    public ResponseEntity<byte[]> obterImagem(@PathVariable int id) {
-       return ;
-    }
-*/
+
+    /*
+        @GetMapping("/veiculos/imagem/{id}")
+        @ResponseBody
+        public ResponseEntity<byte[]> obterImagem(@PathVariable int id) {
+           return ;
+        }
+    */
     @GetMapping("/veiculo/{id}")
     public String mostrarDetalhesVeiculo(@PathVariable int id, Model model) {
         return VehiclesService.vehicleDetails(model, vehicleRepository, id);
@@ -319,7 +320,7 @@ public class MainController {
     }
 
     @GetMapping("/faq")
-    public String faq(HttpSession s, Model model){
+    public String faq(HttpSession s, Model model) {
         Object user = s.getAttribute("email");
         Users users = userRepository.findByEmail(user.toString());
 
@@ -378,8 +379,8 @@ public class MainController {
 
 
     @GetMapping("/veiculos/pesquisa")
-    public String getCar(@RequestParam String termo, Model model){
-        List<Veiculos> veiculos = vehicleRepository.findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(termo,termo);
+    public String getCar(@RequestParam String termo, Model model) {
+        List<Veiculos> veiculos = vehicleRepository.findByMarcaContainingIgnoreCaseOrModeloContainingIgnoreCase(termo, termo);
         model.addAttribute("veiculos", veiculos);
         return "main";
     }

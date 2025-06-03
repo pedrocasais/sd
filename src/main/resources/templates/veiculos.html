@@ -69,8 +69,9 @@
 <div class="veiculos-grid">
     <a th:href="@{'/veiculo/' + ${v.ID}}" class="card" th:each="v : ${veiculos}">
 
-        <img th:if="${v.image != null}" th:src="@{/veiculo/imagem/{id}(id=${v.ID})}" th:alt="${v.modelo}">
-        <img th:if="${v.image == null}" src="/images/autoUBI.png" alt="Imagem por defeito">
+        <div class="img-container">
+            <img th:src="${v.image != null} ? @{/veiculo/imagem/{id}(id=${v.ID})} : '/images/autoUBI.png'" th:alt="${v.modelo}">
+        </div>
 
         <div class="info">
             <h2 th:text="${v.marca + ' ' + v.modelo}"></h2>

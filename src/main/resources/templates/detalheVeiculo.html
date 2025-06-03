@@ -24,7 +24,7 @@
 <div class="detalhes-container">
     <div class="imagem">
         <img th:if="${veiculo.image != null}"
-             th:src="@{/veiculos/imagem/{id}(id=${veiculo.ID})}"
+             th:src="@{/veiculo/imagem/{id}(id=${veiculo.ID})}"
              alt="Imagem do veículo" />
 
         <img th:unless="${veiculo.image != null}"

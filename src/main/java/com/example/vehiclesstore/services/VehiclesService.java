@@ -88,12 +88,12 @@ public class VehiclesService {
     }
 
     public static String vehicleDetails(Model model, VeiculosRepository vehicleRepository, Integer id){
-        Optional<Veiculos> veiculoOpt = vehicleRepository.findById(id);
-        if (veiculoOpt.isEmpty()) {
+        Veiculos veiculos = vehicleRepository.findByID(id);
+        if (veiculos == null) {
             return "redirect:/veiculos?erro=naoencontrado";
         }
 
-        model.addAttribute("veiculo", veiculoOpt.get());
+        model.addAttribute("veiculo", veiculos);
         return "detalheVeiculo";
     }
 

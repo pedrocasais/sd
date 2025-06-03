@@ -25,7 +25,7 @@
     <h1>Finalizar Compra</h1>
     <div class="veiculo-box">
 
-        <img th:if="${veiculo.image != null}" th:src="@{'/veiculos/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}" />
+        <img th:if="${veiculo.image != null}" th:src="@{'/veiculo/imagem/' + ${veiculo.ID}}" th:alt="${veiculo.modelo}" />
         <img th:if="${veiculo.image == null}" src="/images/autoUBI.png" alt="Imagem por defeito" />
 
         <div class="veiculo-info">
