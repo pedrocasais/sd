@@ -62,7 +62,7 @@
                 <strong th:text="${compra.veiculo.marca + ' ' + compra.veiculo.modelo}"></strong>
 
                 <span th:text="${compra.dataVenda}"></span> |<span th:text="${compra.precoVenda + ' €'}"></span> |<a
-                    th:href="@{'/recibo' + ${compra.idVenda}}" target="_blank" class="btn-fatura">📄 Fatura</a></li>
+                    th:href="@{'/recibo-txt/' + ${compra.idVenda}}" target="_blank" class="btn-fatura">📄 Fatura</a></li>
         </ul>
     </div>
 
