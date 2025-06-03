@@ -33,7 +33,7 @@
 
 <div class="menu-off">
     <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="/logo">Home</a></li>
         <li><a href="/veiculos">Veículos</a></li>
         <li><a href="/estatisticas">Estatísticas</a></li>
         <li><a href="/faq">FAQ</a></li>
@@ -42,7 +42,7 @@
 </div>
 
 <div class="filtro-bar">
-    <form method="get" action="/veiculos">
+    <form method="get" th:action="@{/veiculos}">
         <input type="text" name="termo" placeholder="Pesquisar por nome...">
         <select name="marca">
             <option value="">Marca</option>
@@ -69,7 +69,7 @@
 <div class="veiculos-grid">
     <a th:href="@{'/veiculo/' + ${v.ID}}" class="card" th:each="v : ${veiculos}">
 
-        <img th:if="${v.image != null}" th:src="@{'/veiculos/imagem/' + ${v.ID}}" th:alt="${v.modelo}">
+        <img th:if="${v.image != null}" th:src="@{/veiculo/imagem/{id}(id=${v.ID})}" th:alt="${v.modelo}">
         <img th:if="${v.image == null}" src="/images/autoUBI.png" alt="Imagem por defeito">
 
         <div class="info">

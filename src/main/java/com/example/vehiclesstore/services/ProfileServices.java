@@ -13,14 +13,21 @@ import java.util.List;
 @Service
 public class ProfileServices {
 
-    public static String Perfil(Model model, HttpSession session, UsersRepository userRepository, VendasRepository vendasRepository){
+    public static String Perfil(Model model, HttpSession session, UsersRepository userRepository, VendasRepository vendasRepository) {
         Object userEmail = session.getAttribute("email"); // ou use SessionController
 
 
         if (userEmail == null) {
             return "redirect:/login"; // Proteção extra
         }
-        System.out.println("user -> "+userEmail.toString());
+        Users users = userRepository.findByEmail(userEmail.toString());
+
+
+        if (users.getRole().equals("ADMIN")) {
+            model.addAttribute("isAdmin", true);
+        }
+
+        System.out.println("user -> " + userEmail.toString());
         Users user = userRepository.findByEmail(userEmail.toString());
         model.addAttribute("user", user);
 

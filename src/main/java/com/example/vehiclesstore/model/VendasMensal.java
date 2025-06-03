@@ -5,7 +5,7 @@ public class VendasMensal {
     private int mes;
     private double total;
 
-    public void vendaMensal(int mes, double total) {
+    public VendasMensal(int mes, double total) {
         this.mes = mes;
         this.total = total;
     }

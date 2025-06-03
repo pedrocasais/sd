@@ -32,7 +32,7 @@
 <div class="menu-off">
 
     <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="/logo">Home</a></li>
         <li><a href="/veiculos">Veículos</a></li>
         <li><a href="/estatisticas">Estatísticas</a></li>
 
@@ -54,7 +54,6 @@
     <div style="color: white; margin-top: 40px; text-align: center;">
         <h2>Total de Veículos Vendidos: <span th:text="${totalVendidos}">0</span></h2>
 
-        <h2 style="margin-top: 40px;">Melhores 3 Clientes</h2>
         <div th:if="${mostrarTabelaClientes}" style="margin-top: 40px;">
             <h2>Melhores 3 Clientes</h2>
             <table style="margin: 0 auto; color: white; border: 1px solid white;">
@@ -69,7 +68,25 @@
                     <td th:text="${cliente.nome}">Nome Cliente</td>
                     <td th:text="${cliente.totalCompras}">0</td>
                 </tr>
+                </tbody>
+            </table>
+        </div>
 
+        <!-- Tabela de Vendas Mensais -->
+        <div th:if="${mostrarTabelaVendas}" style="margin-top: 40px;">
+            <h2>Vendas Mensais</h2>
+            <table style="margin: 0 auto; color: white; border: 1px solid white;">
+                <thead>
+                <tr>
+                    <th>Mês</th>
+                    <th>Total Vendido</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="venda : ${vendasMensais}">
+                    <td th:text="${venda.mes }">Janeiro 2025</td>
+                    <td th:text="${venda.total}">25000</td>
+                </tr>
                 </tbody>
             </table>
         </div>

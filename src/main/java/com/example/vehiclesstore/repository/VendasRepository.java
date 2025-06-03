@@ -19,12 +19,12 @@ public interface VendasRepository extends CrudRepository<Vendas, Integer> {
 
     List<Vendas> findByUser(Users user);
 
-    /*@Query("SELECT new com.example.vehiclesstore.model.VendasMensal(MONTH(v.dataVenda), SUM(v.precoVenda)) " +
+    @Query("SELECT new com.example.vehiclesstore.model.VendasMensal(MONTH(v.dataVenda), SUM(v.precoVenda)) " +
             "FROM Vendas v " +
             "GROUP BY MONTH(v.dataVenda) " +
             "ORDER BY MONTH(v.dataVenda)")
     List<VendasMensal> findTotalVendasPorMes();
 
 
-     */
+
 }
